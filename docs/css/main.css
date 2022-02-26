@@ -15,7 +15,15 @@ h4 {
 }
 body {
     font-size: 8pt;
+    margin-bottom: 8pt;
 }
 main {
   max-width: 800px;
+}
+
+footer {
+    padding: 8pt;
+    display: block;
+    position: absolute;
+    bottom: 0;
 }
