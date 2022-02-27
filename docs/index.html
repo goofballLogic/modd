@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Message oriented DD</title>
+  <title>Message oriented Domain Design</title>
   <meta name="description"
     content="Message oriented domain design using javascript functions as first-class aggregate roots / entities">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,26 +13,32 @@
 
 <body>
   <main>
-    <h1>Message oriented DD</h1>
+    <h1>Message oriented Domain Design</h1>
     <h2>Message oriented domain design using javascript functions as first-class aggregate roots / entities</h2>
     <p>
-      Domain-driven design is a powerful tool for the creation of software libraries and applications. It ensures
-      that clean design follows from a clean definition of services and their domains.
-      However, it is often (though not exclusively) associated with class-oriented languages and paradigms, where
-      entities are represented by classes (C#, Java), or struct types with methods (Go etc.).
+      The technique described on this site attempts to extrapolate Alan Kay's concept of biological (cellular) automota
+      coordinating their behaviour by means of message exchange.
+      The site describes terms such as:
     </p>
+    <ul>
+      <li><a>domain</a></li>
+      <li><a>bounded context</a></li>
+      <li><a>aggregate root</a></li>
+      <li><a>entity</a></li>
+      <li><a>value</a></li>
+      <li><a>factory</a></li>
+    </ul>
     <p>
-      Originally this site was called "Message oriented DDD" but this was a disservice to the DDD community.
-      DDD tends to focus on modelling domains as sets of entities, value objects and services.
-      Domain logic ends up being distributed between <a>entities</a> (where such logic is associated with
-      identifiable <em>things</em>) and <a>services</a> (where such logic provides cross-cutting functionality).
+      These concepts are used widely in Domain Driven Design (DDD) but the chosen characteristics (both strategic and
+      tactical) are specific to DDD.
+      <br />
+      <br />
+      Below, I define the strategic characteristics of the each concept as applied to this technique.
+      I point out similarities and differences between this technique and DDD.
+      I also include some some initial hints of tactical patterns used to apply them.
     </p>
-    <p>
-      The technique described on this site makes use of ideas such as <a>bounded context</a>, <a>aggregate
-        root</a> and distinguishes between <a>entity</a> and <a>value</a> objects.
-      However, the concept of an <a>entity</a> in this technique differs from that in DDD
-    </p>
-    <h3>Entities related to DDD concepts</h3>
+
+    <h3>Concepts similar to DDD</h3>
     <h4>Entity</h4>
     <p>
       An entity is defined as a state-encapsulating object which interacts with the outside world via messages (an
@@ -49,6 +55,8 @@
     <h4>Value</h4>
     <p>
       Like DDD value objects, value objects are entirely defined by the value of its attributes.
+      <br />
+      <br />
       They are frequently used as the value-bearing portion of a message which can received or emitted by an
       entity.
     </p>
@@ -57,7 +65,14 @@
       Similar to DDD, aggregate roots are entities which are responsible for the coordination of other entities
       via (re-)distribution of messages to entities contained within the aggregate.
     </p>
-    <h3>Unqiue concepts</h3>
+    <h4>Bounded context</h4>
+    <p>TBD</p>
+
+    <h3>Concepts differing widely from DDD counterparts</h3>
+    <h4>Domain</h4>
+    <p>TBD</p>
+
+    <h3>Concepts not common to DDD</h3>
     <h4>Message</h4>
     <p>
       A message is a signal sent to/from an entity and/or aggregate root.
@@ -86,14 +101,14 @@
           runId: uuid(),
           start: Date.now()
         };
-  
+
         // send a message
         result = await visitHomepage(testRunStarted, testRunData);
       </code>
     </p>
   </main>
   <footer>
-    Version 0.4
+    Version 0.5
   </footer>
 </body>
 
