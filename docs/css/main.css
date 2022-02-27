@@ -33,6 +33,10 @@ main {
 }
 code {
     white-space: pre-wrap;
+    padding: 16pt;
+    background-color: #555;
+    color: white;
+    border-radius: 8pt;
 }
 
 /* specific blocks */
