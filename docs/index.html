@@ -96,19 +96,23 @@
       A message is passed to an entity by passing it as parameters:
       <br />
       <code>
-        // test run values
-        const data = {
-          runId: uuid(),
-          start: Date.now()
-        };
+// message data
+const added = Object.freeze({
+  id: uuid(),
+  sku: "UGG-BB-PUR-06",
+  name: "UGG boots (purple)",
+  price: 49.99
+  quantity: 1
+  unit: "pair"
+});
 
-        // send a message
-        result = await visitHomepage(testRunStarted, testRunData);
+// send a message
+result = await cart(itemsAdded, added);
       </code>
     </p>
   </main>
   <footer>
-    Version 0.5
+    Version 0.6
   </footer>
 </body>
 
