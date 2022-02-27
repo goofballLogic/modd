@@ -43,7 +43,7 @@ code {
 body > footer {
   padding: 8pt;
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
