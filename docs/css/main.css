@@ -33,7 +33,7 @@ main {
 }
 code {
     white-space: pre-wrap;
-    margin: 8pt;
+    margin: 8pt 0;
     display: block;
     line-height: 1.25;
     background-color: #EEE;
