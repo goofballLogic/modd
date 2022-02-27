@@ -81,33 +81,19 @@
       A message is passed to an entity by passing it as parameters:
       <br />
       <code>
-        // Scenario factory
-        function Scenario(. . .) {
-          const state = {
-            . . .
-          }
-          return async function(messageType, values) {
-
-          }
-          . . .
-        }
-
-        // create a scenario
-        const visitHomepage = Scenario(. . .);
-
         // test run values
-        const testRunData = {
+        const data = {
           runId: uuid(),
           start: Date.now()
         };
-
+  
         // send a message
         result = await visitHomepage(testRunStarted, testRunData);
       </code>
     </p>
   </main>
   <footer>
-    Version 0.2
+    Version 0.3
   </footer>
 </body>
 
