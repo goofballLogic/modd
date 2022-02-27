@@ -1,4 +1,4 @@
 # moddd
 Message oriented domain driven design
 
-https://goofballlogic.github.io/moddd/
+https://goofballlogic.github.io/modd/
