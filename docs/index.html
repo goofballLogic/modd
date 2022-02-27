@@ -1,27 +1,114 @@
 <!doctype html>
 <html lang="en-GB">
-  <head>
-    <meta charset="utf-8">
-    <title>Message oriented DDD</title>
-    <meta name="description" content="Message oriented domain driven design using javascript functions as first-class aggregate roots / entities">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./css/main.css">
-    <script src="./js/main.js" type="module"></script>
-  </head>
-  <body>
-    <main>
-      <h1>Message oriented DDD</h1>
-      <h2>Message oriented domain driven design using javascript functions as first-class aggregate roots / entities</h2>
-      <p>
-        Domain-driven design is a powerful tool for the creation of software libraries and applications. It ensures that clean design follows from a clean definition of services and their domains.
-        However, it is often (though not exclusively) associated with class-oriented languages and paradigms, where entities are represented by classes (C#, Java), or struct types with methods (Go etc.).
-        <br />
-        <br />
-        The goal of this repository is to explore the potential for implementing domain-driven design concepts using Javascript's rich function-oriented paradigm.
-      </p>
-    </main>
-    <footer>
-      Version 0.2
-    </footer>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title>Message oriented DD</title>
+  <meta name="description"
+    content="Message oriented domain design using javascript functions as first-class aggregate roots / entities">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./css/main.css">
+  <script src="./js/main.js" type="module"></script>
+</head>
+
+<body>
+  <main>
+    <h1>Message oriented DDD</h1>
+    <h2>Message oriented domain design using javascript functions as first-class aggregate roots / entities</h2>
+    <p>
+      Domain-driven design is a powerful tool for the creation of software libraries and applications. It ensures
+      that clean design follows from a clean definition of services and their domains.
+      However, it is often (though not exclusively) associated with class-oriented languages and paradigms, where
+      entities are represented by classes (C#, Java), or struct types with methods (Go etc.).
+    </p>
+    <p>
+      Originally this site was called "Message oriented DDD" but this was a disservice to the DDD community.
+      DDD tends to focus on modelling domains as sets of entities, value objects and services.
+      Domain logic ends up being distributed between <a>entities</a> (where such logic is associated with
+      identifiable <em>things</em>) and <a>services</a> (where such logic provides cross-cutting functionality).
+    </p>
+    <p>
+      The technique described on this site makes use of ideas such as <a>bounded context</a>, <a>aggregate
+        root</a> and distinguishes between <a>entity</a> and <a>value</a> objects.
+      However, the concept of an <a>entity</a> in this technique differs from that in DDD
+    </p>
+    <h3>Entities related to DDD concepts</h3>
+    <h4>Entity</h4>
+    <p>
+      An entity is defined as a state-encapsulating object which interacts with the outside world via messages (an
+      "object" in Alan Kay's conception of object-orientation).
+      <br />
+      <br />
+      An entity is a javascript function. It receives messages (by being called), and emits messages (by return).
+      <br />
+      <br />
+      Unlike DDD, an entity should not be considered a candidate for persistance to some storage medium.
+      Instead, entities frequently collaborate on the assembly of distinct data documents which can be used as
+      models for rendering ephemeral (e.g. UI) or persisted (e.g. database) views.
+    </p>
+    <h4>Value</h4>
+    <p>
+      Like DDD value objects, value objects are entirely defined by the value of its attributes.
+      They are frequently used as the value-bearing portion of a message which can received or emitted by an
+      entity.
+    </p>
+    <h4>Aggregate root</h4>
+    <p>
+      Similar to DDD, aggregate roots are entities which are responsible for the coordination of other entities
+      via (re-)distribution of messages to entities contained within the aggregate.
+    </p>
+    <h3>Unqiue concepts</h3>
+    <h4>Message</h4>
+    <p>
+      A message is a signal sent to/from an entity and/or aggregate root.
+      It is similar to the concept of an "event" or "Domain Event" in DDD in that it usually describes something
+      which has happened.
+      However, messages are the bread-and-butter of this technique.
+      They are not reserved for course-grained interactions.
+      <br />
+      <br />
+      A message consists of two parts:
+    </p>
+    <ol>
+      <li>Message type</li>
+      <li>Message values</li>
+    </ol>
+    <p>
+      A message type is represented as a javascript <a>Symbol</a>.
+      Message values are contained in a plain javascript <a>object</a>.
+      <br />
+      <br />
+      A message is passed to an entity by passing it as parameters:
+      <br />
+      <code>
+        // Scenario factory
+        function Scenario() {
+          const state = {
+            . . .
+          }
+          return async function(messageType, values) {
+
+          }
+          . . .
+        }
+
+        // create a scenario
+        const visitHomepage = Scenario();
+
+        // test run values
+        const testRunData = {
+          runId: uuid(),
+          start: Date.now()
+        };
+
+        // send a message
+        result = await visitHomepage(testRunStarted, testRunData);
+      </code>
+    </p>
+  </main>
+  <footer>
+    Version 0.2
+  </footer>
+</body>
+
 </html>
