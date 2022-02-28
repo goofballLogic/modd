@@ -1,18 +1,19 @@
 # An example: shopping
 
-## Context
+## Domain
 This example is a web page allowing a user to assemble an order. Back-end data is mocked out with flat JSON data.
 
-## Domains
-The example consists of two key domains:
-* Product listing
-* Shopping cart
+## Sub-domains
+The example consists of two key sub-domains:
+* Select a product (product-listing)
+* Compile order (cart)
+* Check-out (not implemented)
 
-### Product listing
+### Bounded context: Product listing
 
-The product listing domain is responsible for the listing of products and selection of products to add to the cart.
+The product listing context is responsible for the listing of products and selection of products to add to the cart.
 
-### Shopping cart
+### Bounded context: Shopping cart
 
-The shopping cart domain is responsible for displaying products which represent an order being prepared
+The shopping cart context is responsible for displaying products which represent an order being prepared
 
