@@ -68,11 +68,21 @@
       via (re-)distribution of messages to entities contained within the aggregate.
     </p>
     <h3>Bounded context</h3>
-    <p>TBD</p>
+    <p>Like DDD, a bounded context represents the chosen boundary within which to implement one or more parts of a
+      domain.
+      Interaction between bounded contexts are explicitly modelled to keep the implementation clean.
+    </p>
 
     <h2>Concepts differing widely from DDD counterparts</h2>
     <h3>Domain</h3>
-    <p>TBD</p>
+    <p>
+      Within DDD, there is a focus on defining a clear domain expressed in a ubiquitous language (and a corresponding
+      <em>domain model</em>).
+      Often the desire for a cleanly-modelled domain pushes parts of the implementation outside of the domain model -
+      e.g. "infrastructure" or "UI".
+      The technique described in this site explicitly demands that the "core" domain encompasses the entirety of the
+      implementation.
+    </p>
 
     <h2>Concepts not common to DDD</h2>
     <h3>Message</h3>
@@ -114,7 +124,7 @@ result = await cart(itemsAdded, added);
     </p>
   </main>
   <footer>
-    Version 0.7
+    Version 0.8
   </footer>
 </body>
 
