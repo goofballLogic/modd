@@ -72,6 +72,13 @@
       domain.
       Interaction between bounded contexts are explicitly modelled to keep the implementation clean.
     </p>
+    <h4>Lack of source-code segregation</h4>
+    <p>
+      It should be noted that using this technique, bounded contexts may reuse entities and values found in other
+      contexts.
+      This is because a bounded context is modelled as a <em>run-time</em> structure of objects (not statically defined
+      folders, files, factories or classes/functions)
+    </p>
 
     <h2>Concepts differing widely from DDD counterparts</h2>
     <h3>Domain</h3>
