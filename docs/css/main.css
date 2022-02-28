@@ -6,49 +6,68 @@
 html {
     font-family: “Playfair Display”, “Didot”, "Times New Roman", Times, serif;
 }
+
 h1 {
+    font-size: 18pt;
+}
+
+h2 {
+    font-size: 16pt;
+}
+
+h3 {
     font-size: 14pt;
 }
-h2 {
+
+h4 {
     font-size: 12pt;
 }
-h3 {
-    font-size: 11pt;
-}
-h4 {
-    font-size: 10pt;
-}
+
 body {
-    font-size: 8pt;
+    font-size: 10pt;
 }
 
 /* major blocks */
-body {   
+body {
     margin: 0;
-    padding: 8pt 8pt 24pt 8pt;
+    padding: 80pt 10pt 60pt 10pt;
     position: relative;
 }
+
 main {
-  max-width: 800px;
+    max-width: 800px;
 }
+
 code {
     white-space: pre-wrap;
-    margin: 8pt 0;
-    padding: 0 8pt;
+    margin: 10pt 0;
+    padding: 0 10pt;
     display: block;
     line-height: 1.25;
     background-color: #EEE;
-    border-radius: 8pt;
+    border-radius: 10pt;
 }
 
 /* specific blocks */
-body > footer {
-  padding: 8pt;
-  display: block;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #777;
-  color: white;
+body>footer,
+body>header {
+    padding: 10pt;
+    display: block;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    background-color: #FFFD;
+    box-shadow: 0 0 3px 0 black;
+}
+
+body>footer {
+    bottom: 0;
+}
+
+body>header {
+    top: 0;
+}
+
+body>header>* {
+    margin: 0;
 }

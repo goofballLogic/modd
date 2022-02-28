@@ -12,9 +12,11 @@
 </head>
 
 <body>
-  <main>
+  <header>
     <h1>Message oriented Domain Design</h1>
-    <h2>Message oriented domain design using javascript functions as first-class aggregate roots / entities</h2>
+    <p>Message oriented domain design using javascript functions as first-class aggregate roots / entities</p>
+  </header>
+  <main>
     <p>
       The technique described on this site attempts to extrapolate Alan Kay's concept of biological (cellular) automota
       coordinating their behaviour by means of message exchange.
@@ -38,8 +40,8 @@
       I also include some some initial hints of tactical patterns used to apply them.
     </p>
 
-    <h3>Concepts similar to DDD</h3>
-    <h4>Entity</h4>
+    <h2>Concepts similar to DDD</h2>
+    <h3>Entity</h3>
     <p>
       An entity is defined as a state-encapsulating object which interacts with the outside world via messages (an
       "object" in Alan Kay's conception of object-orientation).
@@ -52,7 +54,7 @@
       Instead, entities frequently collaborate on the assembly of distinct data documents which can be used as
       models for rendering ephemeral (e.g. UI) or persisted (e.g. database) views.
     </p>
-    <h4>Value</h4>
+    <h3>Value</h3>
     <p>
       Like DDD value objects, value objects are entirely defined by the value of its attributes.
       <br />
@@ -60,20 +62,20 @@
       They are frequently used as the value-bearing portion of a message which can received or emitted by an
       entity.
     </p>
-    <h4>Aggregate root</h4>
+    <h3>Aggregate root</h3>
     <p>
       Similar to DDD, aggregate roots are entities which are responsible for the coordination of other entities
       via (re-)distribution of messages to entities contained within the aggregate.
     </p>
-    <h4>Bounded context</h4>
+    <h3>Bounded context</h3>
     <p>TBD</p>
 
-    <h3>Concepts differing widely from DDD counterparts</h3>
-    <h4>Domain</h4>
+    <h2>Concepts differing widely from DDD counterparts</h2>
+    <h3>Domain</h3>
     <p>TBD</p>
 
-    <h3>Concepts not common to DDD</h3>
-    <h4>Message</h4>
+    <h2>Concepts not common to DDD</h2>
+    <h3>Message</h3>
     <p>
       A message is a signal sent to/from an entity and/or aggregate root.
       It is similar to the concept of an "event" or "Domain Event" in DDD in that it usually describes something
