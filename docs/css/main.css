@@ -38,6 +38,12 @@ main {
     max-width: 800px;
 }
 
+@media only screen and (min-width: 1000px) {
+    main {
+        margin-left: 100px;
+    }
+}
+
 code {
     white-space: pre-wrap;
     margin: 10pt 0;
