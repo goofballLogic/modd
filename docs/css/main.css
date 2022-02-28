@@ -13,6 +13,7 @@ h1 {
 
 h2 {
     font-size: 16pt;
+    border-bottom: solid 1px black;
 }
 
 h3 {
