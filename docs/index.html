@@ -55,13 +55,13 @@
     <h3>Entity</h3>
     <p>
       An entity is is the locus of all behaviour.
-      An entity is something which has a unique identity due how it behaves.
+      An entity is something which has a unique identity due <em>only</em> to how it behaves.
       Although entities produced by the same factory may behave similarly, they are distinguished by internal state
       which causes them to respond in a unique way to messages which they receive.
       <br />
       <br />
-      Unlike DDD, an entity should usually not be identified by other entities.
-      Instead, the goal of this techinque is for entities to collaborate <em>purely</em> via message exchange.
+      An entity should usually not be identifiable other than by the way it behaves in response to messages.
+      The goal of this techinque is for entities to collaborate <em>purely</em> via message exchange.
       Entities are expected to detect messages emitted by other entities and decide whether or not to act upon those
       messages.
     </p>
@@ -69,8 +69,11 @@
     <h3>Value</h3>
     <p>
       Like DDD value objects, value objects are entirely defined by the value of their attributes.
-      However, values may not exhibit behaviours beyond containing their data.
-      Unlike DDD, a value object may be associated with a specific identity by one or more attributes (acting as a key).
+      Values may not exhibit behaviours (beyond the representation of their data).
+      <br />
+      <br />
+      Unlike DDD, a value object may be an identifiable piece of data with its own identity, specified by one or more
+      attributes (acting as a key).
       <br />
       <br />
       Values are frequently used as the value-bearing portion of a <a>message</a> which can received or emitted by an
@@ -102,7 +105,7 @@
       Entities.
     </p>
 
-    <h2>Concepts not common to DDD</h2>
+    <h2>What is a message?</h2>
     <h3>Message</h3>
     <p>
       A message is a signal sent to/from an entity and/or aggregate root.
@@ -128,7 +131,7 @@
     </p>
   </main>
   <footer>
-    Version 0.11
+    Version 0.12
   </footer>
 </body>
 
