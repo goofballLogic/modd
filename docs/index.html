@@ -90,7 +90,15 @@
     <h3>Bounded context</h3>
     <p>Like DDD, a bounded context represents the chosen boundary within which to implement one or more parts of a
       domain.
-      Interaction between bounded contexts are explicitly modelled to keep the implementation clean.
+      <br />
+      <br />
+      Each message belongs to a bounded context and its meaning is defined by its owning context.
+      Messages exchanged by contexts are often handled by a single entity which is responsible for marshalling external
+      messages.
+      <br />
+      <br />
+      Messages owned by a bounded context are intended to flow freely within a bounded context, but not within other
+      bounded contexts.
     </p>
     <h4>Lack of source-code segregation</h4>
     <p>
