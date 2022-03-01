@@ -96,6 +96,11 @@
       This is because a bounded context is modelled as a <em>run-time</em> structure of objects (not statically defined
       folders, files, factories or classes/functions)
     </p>
+    <h3>Factory</h3>
+    <p>
+      Factories are used to create Entities and Aggregate Roots. Without Factories it is not possible to instantiate
+      Entities.
+    </p>
 
     <h2>Concepts not common to DDD</h2>
     <h3>Message</h3>
@@ -114,30 +119,16 @@
       <li>Message values</li>
     </ol>
     <p>
-      A message type is represented as a javascript <a>Symbol</a>.
-      Message values are contained in a plain javascript <a>object</a>.
+      Message types are represented by unique values (JavaScript symbols, URLs and UUIDs are all potential
+      implementation options).
       <br />
       <br />
-      A message is passed to an entity by passing it as parameters:
-      <br />
-      <code>
-// message data
-const added = Object.freeze({
-  id: uuid(),
-  sku: "UGG-BB-PUR-06",
-  name: "UGG boots (purple)",
-  price: 49.99
-  quantity: 1
-  unit: "pair"
-});
-
-// send a message
-result = await cart(itemsAdded, added);
-      </code>
+      Message values are plain data structures without any behaviour (JSON documents, JSON-LD docments and plain-old
+      JavaScript objects which can be created by hydrating JSON, are all good candidates.)
     </p>
   </main>
   <footer>
-    Version 0.9
+    Version 0.11
   </footer>
 </body>
 
