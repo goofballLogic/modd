@@ -60,9 +60,10 @@
       which causes them to respond in a unique way to messages which they receive.
       <br />
       <br />
-      Unlike DDD, an entity should not be considered a candidate for persistance to some storage medium.
-      Instead, entities frequently collaborate on the assembly of distinct data documents (values) which can be used as
-      models for rendering ephemeral (e.g. UI) or persisted (e.g. database) views.
+      Unlike DDD, an entity should usually not be identified by other entities.
+      Instead, the goal of this techinque is for entities to collaborate <em>purely</em> via message exchange.
+      Entities are expected to detect messages emitted by other entities and decide whether or not to act upon those
+      messages.
     </p>
 
     <h3>Value</h3>
