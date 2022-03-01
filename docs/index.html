@@ -40,28 +40,44 @@
       I also include some some initial hints of tactical patterns used to apply them.
     </p>
 
-    <h2>Concepts similar to DDD</h2>
+    <h2>Concepts differing widely from DDD counterparts</h2>
+
+    <h3>Domain</h3>
+    <p>
+      Within DDD, there is a focus on defining a clear domain expressed in a ubiquitous language (and a corresponding
+      <em>domain model</em>).
+      Often the desire for a cleanly-modelled domain pushes parts of the implementation outside of the domain model -
+      e.g. "infrastructure" or "UI".
+      The technique described in this site explicitly demands that the "core" domain encompasses the entirety of the
+      implementation.
+    </p>
+
     <h3>Entity</h3>
     <p>
-      An entity is defined as a state-encapsulating object which interacts with the outside world via messages (an
-      "object" in Alan Kay's conception of object-orientation).
-      <br />
-      <br />
-      An entity is a javascript function. It receives messages (by being called), and emits messages (by return).
+      An entity is is the locus of all behaviour.
+      An entity is something which has a unique identity due how it behaves.
+      Although entities produced by the same factory may behave similarly, they are distinguished by internal state
+      which causes them to respond in a unique way to messages which they receive.
       <br />
       <br />
       Unlike DDD, an entity should not be considered a candidate for persistance to some storage medium.
-      Instead, entities frequently collaborate on the assembly of distinct data documents which can be used as
+      Instead, entities frequently collaborate on the assembly of distinct data documents (values) which can be used as
       models for rendering ephemeral (e.g. UI) or persisted (e.g. database) views.
     </p>
+
     <h3>Value</h3>
     <p>
-      Like DDD value objects, value objects are entirely defined by the value of its attributes.
+      Like DDD value objects, value objects are entirely defined by the value of their attributes.
+      However, values may not exhibit behaviours beyond containing their data.
+      Unlike DDD, a value object may be identified by one or more attributes (acting as a key).
       <br />
       <br />
-      They are frequently used as the value-bearing portion of a message which can received or emitted by an
+      Values are frequently used as the value-bearing portion of a <a>message</a> which can received or emitted by an
       entity.
     </p>
+
+    <h2>Concepts similar to DDD</h2>
+
     <h3>Aggregate root</h3>
     <p>
       Similar to DDD, aggregate roots are entities which are responsible for the coordination of other entities
@@ -78,17 +94,6 @@
       contexts.
       This is because a bounded context is modelled as a <em>run-time</em> structure of objects (not statically defined
       folders, files, factories or classes/functions)
-    </p>
-
-    <h2>Concepts differing widely from DDD counterparts</h2>
-    <h3>Domain</h3>
-    <p>
-      Within DDD, there is a focus on defining a clear domain expressed in a ubiquitous language (and a corresponding
-      <em>domain model</em>).
-      Often the desire for a cleanly-modelled domain pushes parts of the implementation outside of the domain model -
-      e.g. "infrastructure" or "UI".
-      The technique described in this site explicitly demands that the "core" domain encompasses the entirety of the
-      implementation.
     </p>
 
     <h2>Concepts not common to DDD</h2>
@@ -131,7 +136,7 @@ result = await cart(itemsAdded, added);
     </p>
   </main>
   <footer>
-    Version 0.8
+    Version 0.9
   </footer>
 </body>
 

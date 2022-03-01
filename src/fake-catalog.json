@@ -1,0 +1,31 @@
+{
+    "@context": {
+        "@vocab": "https://goofballlogic.github.io/modd/",
+        "imageUrl": {
+            "@type": "@id"
+        }
+    },
+    "items": [
+        {
+            "listingId": 39281938472,
+            "title": "Photography in Art Teaching (Batsford Art & Craft Books)",
+            "author": "Alan Kay",
+            "price": 0.84,
+            "imageUrl": "https://pictures.abebooks.com/isbn/9780713423150-uk-300.jpg"
+        },
+        {
+            "listingId": 74837461295,
+            "title": "North Thanet Coast (Pocket Images)",
+            "author": "Alan Kay",
+            "price": 4.18,
+            "imageUrl": "https://pictures.abebooks.com/isbn/9781845883027-uk-300.jpg"
+        },
+        {
+            "listingId": 99383817264,
+            "title": "Margate (Paperback)",
+            "author": "Alan Kay",
+            "price": 13.01,
+            "imageUrl": "https://pictures.abebooks.com/isbn/9781845891237-uk-300.jpg"
+        }
+    ]
+}
