@@ -81,3 +81,14 @@ body>header {
 body>header>* {
     margin: 0;
 }
+
+body>aside {
+    padding: 20pt;
+    margin: 20pt 0;
+    border: solid 1px black;    
+}
+
+body>aside>img:first-child {
+    width: 100%;
+    margin-bottom: 20pt;
+}
