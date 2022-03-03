@@ -89,5 +89,10 @@ main>aside {
 }
 main>aside>figure,
 figure>img {
+    margin: 0;
     width: 100%;
+}
+
+figure img+figcaption {
+    margin-top: 10pt;
 }
