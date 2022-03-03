@@ -87,8 +87,11 @@ main>aside {
     margin: 20pt 0;
     box-shadow: silver 0 0 10px 0;   
 }
-
-main>aside>img:first-child {
+main>aside>figure,
+figure>img {
     width: 100%;
-    margin-bottom: 20pt;
+}
+
+figcaption {
+    font-size: 8pt;
 }
