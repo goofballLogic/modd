@@ -85,8 +85,13 @@ body>header>* {
 main>aside {
     padding: 20pt;
     margin: 20pt 0;
-    box-shadow: silver 0 0 10px 0;   
 }
+
+main>aside,
+main>figure {
+    box-shadow: silver 0 0 10px 0;
+}
+
 main>aside>figure,
 figure>img,
 figure>a>img {
