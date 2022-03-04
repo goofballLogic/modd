@@ -34,7 +34,7 @@ body {
 /* major blocks */
 body {
     margin: 0;
-    padding: 80pt 10pt 60pt 10pt;
+    padding: 100pt 10pt 60pt 10pt;
     position: relative;
 }
 
@@ -42,7 +42,7 @@ main {
     max-width: 800px;
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1000px) {    
     main {
         margin-left: 100px;
     }
