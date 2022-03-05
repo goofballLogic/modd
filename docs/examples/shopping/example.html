@@ -7,8 +7,8 @@
   <meta name="description"
     content="Message oriented domain design using javascript functions as first-class aggregate roots / entities">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="./css/main.css">
-  <script src="./js/main.js" type="module"></script>
+  <link rel="stylesheet" href="../../css/main.css">
+  <script src="../../js/main.js"></script>
 </head>
 
 <body>
@@ -16,14 +16,14 @@
     <h1>Message oriented Domain Design</h1>
     <p>Message oriented domain design using javascript functions as first-class aggregate roots / entities</p>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="example.html">example</a>
+      <a href="../../index.html">Home</a>
+      <a href="./example.html">Example</a>
     </nav>
   </header>
   <main>
 
     <h2>A domain defined</h2>
-    
+
     <p>
       Below, a concrete example of a chosen domain with mappings to code samples (and a working sample).
     </p>
@@ -33,16 +33,24 @@
     <p>
       The diagram below shows events which can occur as part of an online shopping user journey
     </p>
-    
+
     <figure>
-      <a href="img/cart-domain-contexts.png">
-        <img src="img/cart-domain-contexts.png" alt="Contexts of a cart domain" />
+      <a href="../../img/cart-domain-contexts.png">
+        <img src="../../img/cart-domain-contexts.png" alt="Contexts of a cart domain" />
       </a>
       <figcaption>
         Diagram of a cart domain
       </figcaption>
-    </figure>  
+    </figure>
 
+    <p>We can see that the first event which takes place in our domain is the "Shopping page requested" event from the
+      "Navigation" bounded context.</p>
+
+    <h3>Messages for a bounded context</h3>
+    <p>The messages defined by the Navigation context are very simple. There is only one</p>
+    <aside>
+      <a class="embeddable-code" href="./src/navigation/navigation-messages.js">navigation/navigation-messages.js</a>
+    </aside>
   </main>
   <footer>
     Version 0.4

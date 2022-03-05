@@ -42,20 +42,26 @@ main {
     max-width: 800px;
 }
 
-@media only screen and (min-width: 1000px) {    
+@media only screen and (min-width: 1000px) {
     main {
         margin-left: 100px;
     }
 }
 
 code {
-    white-space: pre-wrap;
-    margin: 10pt 0;
-    padding: 0 10pt;
+    white-space: pre;
+    padding: 20pt;
     display: block;
     line-height: 1.25;
-    background-color: #EEE;
-    border-radius: 10pt;
+    background-color: #F7F7FF;
+    box-shadow: inset 0 0 1px 0 black;
+    overflow-x: auto;
+}
+
+@media only screen and (min-width: 1000px) {
+    code {
+        padding: 20pt;
+    }
 }
 
 /* specific blocks */
@@ -83,17 +89,29 @@ body>header>* {
 }
 
 main>aside {
-    
+
     margin: 20pt 0;
 }
+
 main>figure {
     margin: 0;
 }
+
 main>aside,
 main>figure {
-    padding: 20pt;
-    box-shadow: silver 0 0 10px 0;
+    padding: 5px;
+    box-shadow: silver 0 0 2px 0;
 }
+
+@media only screen and (min-width: 1000px) {
+
+    main>aside,
+    main>figure {
+        padding: 20pt;
+        box-shadow: silver 0 0 10px 0;
+    }
+}
+
 main>aside>figure,
 figure>img,
 figure>a>img {
@@ -102,5 +120,9 @@ figure>a>img {
 }
 
 figure img+figcaption {
+    margin-top: 10pt;
+}
+
+.embeddable-code+code {
     margin-top: 10pt;
 }
