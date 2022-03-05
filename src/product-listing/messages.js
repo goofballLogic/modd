@@ -1,1 +1,0 @@
-export const catalogUpdated = Symbol("product-listing.catalog-updated");

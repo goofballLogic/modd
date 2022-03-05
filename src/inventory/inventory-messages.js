@@ -1,0 +1,1 @@
+export const availableProductsDetermined = Symbol("Available products determined");

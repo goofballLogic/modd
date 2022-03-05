@@ -1,0 +1,1 @@
+export const shoppingPageRequested = Symbol("Shopping page requested");

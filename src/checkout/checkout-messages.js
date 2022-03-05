@@ -1,0 +1,1 @@
+export const checkoutWasRequested = Symbol("Checkout was requested");

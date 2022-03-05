@@ -1,18 +1,32 @@
-import "./cart/cart.js";
-import ProductListing, { Messages as ProductListingMessages } from "./product-listing/product-listing.js";
+import Cart from "./cart/cart.js";
+import ProductListing from "./product-listing/product-listing.js";
+import Inventory from "./inventory/inventory.js";
+import Navigation from "./navigation/navigation.js";
+import Checkout from "./checkout/checkout.js";
 
-(async function () {
+import { shoppingPageRequested } from "./navigation/navigation-messages.js";
 
-    const productListing = ProductListing();
-    const catalog = await fetchFakeCatalog();
+const domain = [
+    Cart(),
+    ProductListing(),
+    Inventory(),
+    Navigation(),
+    Checkout()
+].filter(x => x);
 
-    productListing(ProductListingMessages.catalogUpdated, catalog);
+const postbox = [];
 
-}());
+postbox.push([shoppingPageRequested]);
 
-async function fetchFakeCatalog() {
-
-    const catalogResponse = await fetch("./fake-catalog.json");
-    return (await catalogResponse.json()).items;
-
+while (postbox.length) {
+    console.log(postbox.length);
+    const message = postbox.shift();
+    for (let entity of domain) {
+        const returned = await entity.apply(entity, message);
+        if (returned) {
+            for (let returnedMessage of returned) {
+                postbox.push(returnedMessage);
+            }
+        }
+    }
 }
