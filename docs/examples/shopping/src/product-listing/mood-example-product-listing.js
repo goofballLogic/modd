@@ -1,9 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const link = document.createElement("LINK");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("href", import.meta.url.replace(/\.js/, ".css"));
-    document.head.appendChild(link);
-});
+import { parentAggregateCreated } from "../../lib/aggregate.js";
+import { ensureStylesheet } from "../browser/elements.js";
+
+ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
 class MODDExampleProductListing extends HTMLElement {
     constructor() {
@@ -15,4 +13,5 @@ class MODDExampleProductListing extends HTMLElement {
         this.innerHTML = "product-listing";
     }
 }
+
 customElements.define("modd-example-product-listing", MODDExampleProductListing);

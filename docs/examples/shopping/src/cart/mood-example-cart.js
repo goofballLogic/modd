@@ -1,9 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const link = document.createElement("LINK");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("href", import.meta.url.replace(/\.js/, ".css"));
-    document.head.appendChild(link);
-});
+import { ensureStylesheet } from "../browser/elements.js";
+
+ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
 class MODDExampleCart extends HTMLElement {
     constructor() {
