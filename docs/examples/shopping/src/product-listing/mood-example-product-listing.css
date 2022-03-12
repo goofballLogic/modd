@@ -1,4 +1,28 @@
 modd-example-product-listing {
-    padding: 10px;
-    flex: 2 2 auto;
+    flex: 2;
+}
+
+modd-example-product-listing ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+modd-example-product-listing ul li {
+    display: grid;
+    padding: 10pt;
+    box-shadow: 0 0 1px 0 silver;
+}
+
+modd-example-product-listing ul li+li {
+    margin-top: 10pt;
+}
+
+modd-example-product-listing .author {
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+modd-example-product-listing .title {
+    font-size: var(--title-text-size);
 }

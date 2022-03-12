@@ -3,7 +3,16 @@
 }
 
 body {
-    display: flex;
     min-height: 100vh;
-    margin: 0;
+    font-family: sans-serif;
+    font-weight: 100;
+    --title-text-size: 1.2em;
+    line-height: 1.5;
+}
+
+main {
+    display: flex;
+    gap: 10pt;
+    max-width: 1200px;
+    margin: auto;
 }

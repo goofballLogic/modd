@@ -1,4 +1,34 @@
 modd-example-cart {
-    padding: 10px;
-    flex: 1 1 auto;
+    flex: 1;
+    box-shadow: 0 0 1px 0 silver;
+}
+
+modd-example-cart header {
+    font-size: var(--title-text-size);
+    padding: 10pt;
+    background-color: #EEE;
+}
+
+modd-example-cart .empty-message {
+    padding: 10pt;
+    display: block;
+}
+
+modd-example-cart ul {
+    margin: 10pt;
+    padding: 0;
+}
+
+modd-example-cart li {
+    display: flex;
+    gap: 10pt;
+}
+
+modd-example-cart li .quantity {
+    flex: 0 0 2em;
+
+}
+
+modd-example-cart form {
+    padding: 10pt;
 }
