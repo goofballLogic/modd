@@ -6,6 +6,7 @@ import Collection from "./collection.js";
 import "./mood-example-cart.js";
 import { CartDispatcher } from "./mood-example-cart.js";
 import Transformer from "../../lib/transformer.js";
+import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 
 const clone = x => JSON.parse(JSON.stringify(x));
 const reduceEntries = (obj, key) => Object.fromEntries(
@@ -20,11 +21,14 @@ export default function Cart() {
 
     const forwardItemsInCartStatusUpdatedToParent = Forwarder("cart -> parent: itemsInCartStatusUpdated", itemsInCartStatusUpdated, () => parentAggregate);
 
+    const forwardCheckoutWasRequestedToParent = Forwarder("cart -> parent: checkoutWasRequested", checkoutWasRequested, () => parentAggregate);
+
     const context = Aggregate("cart", [
         CartDispatcher,
         Collection(),
         forawrdCartUpdatedToParent,
-        forwardItemsInCartStatusUpdatedToParent
+        forwardItemsInCartStatusUpdatedToParent,
+        forwardCheckoutWasRequestedToParent
     ]);
 
     return async (messageType, messageData) => {

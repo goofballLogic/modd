@@ -1,6 +1,7 @@
 import DOMDispatcher from "../../lib/dom-dispatcher.js";
 import { ensureStylesheet } from "../browser/elements.js";
-import { cartBehaviourRequested, itemsInCartStatusUpdated } from "./cart-messages.js";
+import { checkoutWasRequested } from "../checkout/checkout-messages.js";
+import { cartBehaviourRequested, itemsInCartStatusUpdated, cart } from "./cart-messages.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
@@ -14,6 +15,7 @@ class MODDExampleCart extends HTMLElement {
     constructor() {
         super();
         CartDispatcher.register(this, this.receive.bind(this));
+        this.attachHandlers();
         this.render();
     }
 
@@ -25,7 +27,6 @@ class MODDExampleCart extends HTMLElement {
         if (messageType === itemsInCartStatusUpdated) {
             const items = Array.from(this.#items);
             for (const [itemId, { title, quantity }] of Object.entries(messageData.items)) {
-                console.log(itemId, quantity);
                 const existing = items.find(x => x.itemId === itemId);
                 if (existing) {
                     existing.quantity = quantity;
@@ -33,8 +34,34 @@ class MODDExampleCart extends HTMLElement {
                     this.#items.add({ itemId, quantity, title });
                 }
             }
+            for (const item of this.#items) {
+                if (!(item.itemId in messageData.items))
+                    this.#items.delete(item);
+            }
             this.render();
         }
+    }
+
+    attachHandlers() {
+        this.addEventListener("submit", e => {
+            const data = Object.fromEntries((new FormData(e.target)).entries());
+            if (e.submitter && e.submitter.name) {
+                data[e.submitter.name] = e.submitter.value;
+            }
+            switch (data.command) {
+                case "clear":
+                    e.preventDefault();
+                    CartDispatcher.send(cart.lineItemCleared, { itemId: data.itemId });
+                    break;
+                case "reduce":
+                    e.preventDefault();
+                    CartDispatcher.send(cart.decreaseLineItemQuantity, { itemId: data.itemId });
+            }
+            if (e.target.classList.contains("checkout")) {
+                e.preventDefault();
+                CartDispatcher.send(cart.checkoutRequested);
+            }
+        });
     }
 
     render() {
@@ -63,17 +90,25 @@ function renderItems(items) {
 }
 
 function renderItem(item) {
+    const decreaseEnabled = item.quantity > 1;
     return `
         <li>
-            <span class="quantity">${item.quantity ?? "?"}</span>
-            <span class="title">${item.title ?? "?"}</span>
+            <form class="line-item">
+                <input type="hidden" name="itemId" value="${item.itemId}" />
+                <button name="command" value="clear">remove</button>
+                <span class="quantity">${item.quantity ?? "?"}</span>
+                <span class="title">${item.title ?? "?"}</span>
+                <button name="command" value="reduce" ${decreaseEnabled ? "" : "disabled"}>
+                    less
+                </button>
+            </form>
         </li>
     `;
 }
 
 function checkoutForm(canCheckout) {
     return `
-        <form>
+        <form class="checkout">
             <button ${canCheckout ? "" : "disabled"}>Check out</button>
         </form>
     `;

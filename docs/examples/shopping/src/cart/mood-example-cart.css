@@ -17,18 +17,39 @@ modd-example-cart .empty-message {
 modd-example-cart ul {
     margin: 10pt;
     padding: 0;
+    list-style: none;
 }
 
 modd-example-cart li {
+    margin-bottom: 5pt;
+}
+
+modd-example-cart form.line-item {
     display: flex;
     gap: 10pt;
+    align-items: center;
 }
 
-modd-example-cart li .quantity {
+modd-example-cart form.line-item button {
+    padding: 5pt;
+    background-color: transparent;
+    border: none;
+    padding: 10pt;
+    transition: linear 0.3s all;
+}
+
+modd-example-cart form.line-item button:not(:disabled):hover {
+    background-color: #EEE;
+}
+
+modd-example-cart form.line-item .quantity {
     flex: 0 0 2em;
-
 }
 
-modd-example-cart form {
+modd-example-cart form.line-item .title {
+    flex: 1;
+}
+
+modd-example-cart form.checkout {
     padding: 10pt;
 }

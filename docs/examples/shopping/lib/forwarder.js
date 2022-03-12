@@ -7,7 +7,7 @@ export default function Forwarder(name, messageTypeToForward, recipient) {
     const correlationId = Symbol(name)
 
     return async (messageType, messageData) => {
-        if (correlationId in messageData) {
+        if (messageData && correlationId in messageData) {
             console.group(name);
             console.log("already forwarded", messageType, messageData);
             console.groupEnd();
