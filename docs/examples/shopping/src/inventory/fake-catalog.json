@@ -29,6 +29,22 @@
             "price": 13.01,
             "imageUrl": "https://pictures.abebooks.com/isbn/9781845891237-uk-300.jpg",
             "stockLevel": 1
+        },
+        {
+            "listingId": "9781484263051",
+            "title": "What I did when I got home",
+            "author": "Bjarne Stroustrup",
+            "price": 0.84,
+            "imageUrl": "https://pictures.abebooks.com/inventory/md/md30808873404.jpg",
+            "stockLevel": 3
+        },
+        {
+            "listingId": "9783540761150",
+            "title": "Smalltalk and Object Orientation: An Introduction",
+            "author": "John Hunt",
+            "price": 2.59,
+            "imageUrl": "https://pictures.abebooks.com/isbn/9783540761150-uk-300.jpg",
+            "stockLevel": 1
         }
     ]
 }

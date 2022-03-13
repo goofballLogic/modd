@@ -1,12 +1,35 @@
 modd-example-cart {
     flex: 1;
     box-shadow: 0 0 1px 0 silver;
+    position: sticky;
+    top: 10pt;
+    background-color: white;
+}
+
+modd-example-cart ul {
+    max-height: 300pt;
+    overflow-y: auto;
+}
+
+modd-example-cart.collapsed ul,
+modd-example-cart.collapsed form.checkout,
+modd-example-cart.collapsed .empty-message {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 modd-example-cart header {
     font-size: var(--title-text-size);
     padding: 10pt;
     background-color: #EEE;
+}
+
+modd-example-cart header .total-count {
+    float: right;
 }
 
 modd-example-cart .empty-message {

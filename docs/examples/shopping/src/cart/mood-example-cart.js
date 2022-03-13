@@ -11,6 +11,7 @@ class MODDExampleCart extends HTMLElement {
 
     #items = new Set();
     #isEnabled = false;
+    #collapsed = true;
 
     constructor() {
         super();
@@ -62,18 +63,34 @@ class MODDExampleCart extends HTMLElement {
                 CartDispatcher.send(cart.checkoutRequested);
             }
         });
+        this.addEventListener("click", e => {
+            if (e.target.classList.contains("toggler")) {
+                this.#collapsed = !this.#collapsed;
+                this.render();
+            }
+        })
     }
 
     render() {
 
+        if (this.#collapsed && !this.classList.contains("collapsed")) {
+            this.classList.add("collapsed");
+        }
+        if (!this.#collapsed && this.classList.contains("collapsed")) {
+            this.classList.remove("collapsed");
+        }
         const hasItems = !!this.#items.size
         const canCheckout = hasItems && this.#isEnabled;
         this.innerHTML = `
-            <header>Cart</header>
+            <header class="toggler">Cart <span class="total-count">${countItems(this.#items)}</span></header>
             ${hasItems ? renderItems(this.#items) : renderEmpty()}
             ${checkoutForm(canCheckout)}
         `;
     }
+}
+
+function countItems(items) {
+    return Array.from(items).reduce((sum, i) => sum + i.quantity, 0);
 }
 
 function renderEmpty() {

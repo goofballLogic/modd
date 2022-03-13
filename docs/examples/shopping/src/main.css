@@ -22,8 +22,9 @@ button {
 }
 
 main {
-    display: flex;
-    gap: 10pt;
     max-width: 1200px;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10pt;
 }
