@@ -4,11 +4,12 @@ import { productListBehaviourRequested } from "../product-listing/product-listin
 
 export default function Navigation() {
 
-    return (messageType) => {
+    return (messageType, messageData) => {
         if (messageType === shoppingPageRequested) {
+            const { cart, productListing } = messageData;
             return [
                 [productListBehaviourRequested],
-                [cartBehaviourRequested]
+                [cartBehaviourRequested, { cart }]
             ];
         }
     }

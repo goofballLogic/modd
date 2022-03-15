@@ -17,7 +17,13 @@ const domain = Aggregate("shopping domain", [
     Outcome()
 ]);
 
-domain(shoppingPageRequested);
+domain(
+    shoppingPageRequested,
+    {
+        cart: "modd-cart",
+        productListing: "modd-product-listing"
+    }
+);
 
 function Outcome() {
     return async (messageType, messageData) => {

@@ -1,4 +1,4 @@
-import { ProductListingDispatcher } from "./mood-example-product-listing.js";
+import { ProductListingDispatcher } from "./modd-product-listing.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 import Aggregate, { parentAggregateCreated } from "../../lib/aggregate.js";
 import { productListing } from "./product-listing-messages.js";

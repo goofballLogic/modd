@@ -1,25 +1,25 @@
-modd-example-product-listing {
+modd-product-listing {
     flex: 2;
 }
 
-modd-example-product-listing ul {
+modd-product-listing ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-modd-example-product-listing ul li {
+modd-product-listing ul li {
     display: grid;
     padding: 10pt;
     box-shadow: 0 0 1px 0 silver;
     grid-template-columns: 100pt 1fr;
 }
 
-modd-example-product-listing li>* {
+modd-product-listing li>* {
     grid-column-start: 2;
 }
 
-modd-example-product-listing li .thumbnail {
+modd-product-listing li .thumbnail {
     float: left;
     max-height: 100pt;
     grid-column-start: 1;
@@ -28,15 +28,15 @@ modd-example-product-listing li .thumbnail {
     grid-row-end: 99;
 }
 
-modd-example-product-listing li+li {
+modd-product-listing li+li {
     margin-top: 10pt;
 }
 
-modd-example-product-listing .author {
+modd-product-listing .author {
     grid-row-start: 2;
     grid-row-end: 3;
 }
 
-modd-example-product-listing .title {
+modd-product-listing .title {
     font-size: var(--title-text-size);
 }

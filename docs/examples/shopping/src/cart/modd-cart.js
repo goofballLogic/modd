@@ -1,23 +1,28 @@
-import DOMDispatcher from "../../lib/dom-dispatcher.js";
 import { ensureStylesheet } from "../browser/elements.js";
-import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 import { cartBehaviourRequested, itemsInCartStatusUpdated, cart } from "./cart-messages.js";
+import { ElementSidePort } from "../../lib/dom-adapter.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
-
-export const CartDispatcher = DOMDispatcher();
 
 class MODDExampleCart extends HTMLElement {
 
     #items = new Set();
     #isEnabled = false;
     #collapsed = true;
+    #sendMessage;
 
     constructor() {
         super();
-        CartDispatcher.register(this, this.receive.bind(this));
         this.attachHandlers();
         this.render();
+    }
+
+    connectedCallback() {
+        this.#sendMessage = ElementSidePort("cart", this, this.receive.bind(this));
+    }
+
+    disconnectedCallback() {
+        this.#sendMessage.dispose();
     }
 
     receive(messageType, messageData) {
@@ -52,15 +57,16 @@ class MODDExampleCart extends HTMLElement {
             switch (data.command) {
                 case "clear":
                     e.preventDefault();
-                    CartDispatcher.send(cart.lineItemCleared, { itemId: data.itemId });
+                    this.#sendMessage(cart.lineItemCleared, { itemId: data.itemId });
                     break;
                 case "reduce":
                     e.preventDefault();
-                    CartDispatcher.send(cart.decreaseLineItemQuantity, { itemId: data.itemId });
+                    this.#sendMessage(cart.decreaseLineItemQuantity, { itemId: data.itemId });
+                    break;
             }
             if (e.target.classList.contains("checkout")) {
                 e.preventDefault();
-                CartDispatcher.send(cart.checkoutRequested);
+                this.#sendMessage(cart.checkoutRequested);
             }
         });
         this.addEventListener("click", e => {
@@ -131,4 +137,4 @@ function checkoutForm(canCheckout) {
     `;
 }
 
-customElements.define("modd-example-cart", MODDExampleCart);
+customElements.define("modd-cart", MODDExampleCart);

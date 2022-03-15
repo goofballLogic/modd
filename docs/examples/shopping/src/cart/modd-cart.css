@@ -1,4 +1,4 @@
-modd-example-cart {
+modd-cart {
     flex: 1;
     box-shadow: 0 0 1px 0 silver;
     position: sticky;
@@ -6,14 +6,14 @@ modd-example-cart {
     background-color: white;
 }
 
-modd-example-cart ul {
+modd-cart ul {
     max-height: 300pt;
     overflow-y: auto;
 }
 
-modd-example-cart.collapsed ul,
-modd-example-cart.collapsed form.checkout,
-modd-example-cart.collapsed .empty-message {
+modd-cart.collapsed ul,
+modd-cart.collapsed form.checkout,
+modd-cart.collapsed .empty-message {
     max-height: 0;
     overflow: hidden;
     padding-top: 0;
@@ -22,38 +22,38 @@ modd-example-cart.collapsed .empty-message {
     margin-bottom: 0;
 }
 
-modd-example-cart header {
+modd-cart header {
     font-size: var(--title-text-size);
     padding: 10pt;
     background-color: #EEE;
 }
 
-modd-example-cart header .total-count {
+modd-cart header .total-count {
     float: right;
 }
 
-modd-example-cart .empty-message {
+modd-cart .empty-message {
     padding: 10pt;
     display: block;
 }
 
-modd-example-cart ul {
+modd-cart ul {
     margin: 10pt;
     padding: 0;
     list-style: none;
 }
 
-modd-example-cart li {
+modd-cart li {
     margin-bottom: 5pt;
 }
 
-modd-example-cart form.line-item {
+modd-cart form.line-item {
     display: flex;
     gap: 10pt;
     align-items: center;
 }
 
-modd-example-cart form.line-item button {
+modd-cart form.line-item button {
     padding: 5pt;
     background-color: transparent;
     border: none;
@@ -61,18 +61,18 @@ modd-example-cart form.line-item button {
     transition: linear 0.3s all;
 }
 
-modd-example-cart form.line-item button:not(:disabled):hover {
+modd-cart form.line-item button:not(:disabled):hover {
     background-color: #EEE;
 }
 
-modd-example-cart form.line-item .quantity {
+modd-cart form.line-item .quantity {
     flex: 0 0 2em;
 }
 
-modd-example-cart form.line-item .title {
+modd-cart form.line-item .title {
     flex: 1;
 }
 
-modd-example-cart form.checkout {
+modd-cart form.checkout {
     padding: 10pt;
 }

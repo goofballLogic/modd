@@ -3,15 +3,9 @@ import Forwarder from "../../lib/forwarder.js";
 import { cart, cartBehaviourRequested, cartUpdated, itemsInCartStatusUpdated, itemWasAddedToCart } from "./cart-messages.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 import Collection from "./collection.js";
-import "./mood-example-cart.js";
-import { CartDispatcher } from "./mood-example-cart.js";
-import Transformer from "../../lib/transformer.js";
+import "./modd-cart.js";
 import { checkoutWasRequested } from "../checkout/checkout-messages.js";
-
-const clone = x => JSON.parse(JSON.stringify(x));
-const reduceEntries = (obj, key) => Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [k, v[key]])
-);
+import { ContextSidePort } from "../../lib/dom-adapter.js";
 
 export default function Cart() {
 
@@ -23,27 +17,31 @@ export default function Cart() {
 
     const forwardCheckoutWasRequestedToParent = Forwarder("cart -> parent: checkoutWasRequested", checkoutWasRequested, () => parentAggregate);
 
-    const context = Aggregate("cart", [
-        CartDispatcher,
-        Collection(),
-        forawrdCartUpdatedToParent,
-        forwardItemsInCartStatusUpdatedToParent,
-        forwardCheckoutWasRequestedToParent
-    ]);
+    let context = null
 
     return async (messageType, messageData) => {
         switch (messageType) {
             case cartBehaviourRequested:
+                const cartWidget = ContextSidePort("cart-element", messageData.cart, (mt, md) => context(mt, md));
+                context = Aggregate("cart", [
+                    Collection(),
+                    cartWidget,
+                    forawrdCartUpdatedToParent,
+                    forwardItemsInCartStatusUpdatedToParent,
+                    forwardCheckoutWasRequestedToParent
+                ])
                 await context(cartBehaviourRequested, { enabled: true })
                 break;
             case parentAggregateCreated:
                 parentAggregate = messageData;
                 break;
             case itemWasAddedToCart:
-                await context(itemWasAddedToCart, asCartItem(messageData));
+                if (context)
+                    await context(itemWasAddedToCart, asCartItem(messageData));
                 break;
             case availableProductsDetermined:
-                await context(cart.productList, asCartProductList(messageData));
+                if (context)
+                    await context(cart.productList, asCartProductList(messageData));
                 break;
         }
     }

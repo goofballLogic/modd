@@ -59,4 +59,4 @@ function renderItem(item) {
     </li>`;
 }
 
-customElements.define("modd-example-product-listing", MODDExampleProductListing);
+customElements.define("modd-product-listing", MODDExampleProductListing);
