@@ -1,5 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import { ContextSidePort } from "../lib/dom-adapter.js";
+import { ContextPort } from "../lib/dom-adapter.js";
 import "./MODDTestsExampleElement.js";
 
 describe("Given a DOM element with a port", function () {
@@ -16,13 +16,13 @@ describe("Given a DOM element with a port", function () {
 
     describe("And a context-side port is created", function () {
 
-        let contextSidePort;
+        let contextPort;
         let contextSideMessagesReceived;
 
         beforeEach(() => {
             contextSideMessagesReceived = [];
             const elementSelector = `#${exampleElement.id}`;
-            contextSidePort = ContextSidePort(
+            contextPort = ContextPort(
                 "example-element_context-side",
                 elementSelector,
                 (mt, md) => contextSideMessagesReceived.push([mt, md])
@@ -35,7 +35,7 @@ describe("Given a DOM element with a port", function () {
 
             beforeEach(async () => {
 
-                await contextSidePort(message1, "hello to the DOM element");
+                await contextPort(message1, "hello to the DOM element");
 
             });
 
@@ -55,7 +55,7 @@ describe("Given a DOM element with a port", function () {
             beforeEach(async () => {
 
                 exampleElement.remove();
-                await contextSidePort(message2, "into the void");
+                await contextPort(message2, "into the void");
 
             });
 

@@ -1,7 +1,7 @@
 const messageSentEvent = "modd:message-sent";
 const messageReceivedEvent = "modd:message-received";
 
-export function ContextSidePort(name, elementSelector, send) {
+export function ContextPort(name, elementSelector, send) {
 
     const element = document.querySelector(elementSelector);
     if (!element) throw new Error(`Element not found: ${elementSelector}`);
@@ -16,7 +16,7 @@ export function ContextSidePort(name, elementSelector, send) {
 
 }
 
-export function ElementSidePort(name, element, receive) {
+export function ElementPort(name, element, receive) {
 
     return Port({
         name,

@@ -1,4 +1,4 @@
-import { ElementSidePort } from "../lib/dom-adapter.js";
+import { ElementPort } from "../lib/dom-adapter.js";
 
 class MODDTestsExampleElement extends HTMLElement {
 
@@ -10,7 +10,7 @@ class MODDTestsExampleElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.#port = ElementSidePort(
+        this.#port = ElementPort(
             "example-element_" + this.id,
             this,
             (t, d) => this.receive(t, d)

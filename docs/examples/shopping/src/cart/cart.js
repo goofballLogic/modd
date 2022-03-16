@@ -1,11 +1,11 @@
 import Aggregate, { parentAggregateCreated } from "../../lib/aggregate.js";
 import Forwarder from "../../lib/forwarder.js";
-import { cart, cartBehaviourRequested, cartUpdated, itemsInCartStatusUpdated, itemWasAddedToCart } from "./cart-messages.js";
+import { cartBehaviourRequested, cartUpdated, itemsInCartStatusUpdated, itemWasAddedToCart } from "./cart-messages.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 import Collection from "./collection.js";
 import "./modd-cart.js";
 import { checkoutWasRequested } from "../checkout/checkout-messages.js";
-import { ContextSidePort } from "../../lib/dom-adapter.js";
+import { ContextPort } from "../../lib/dom-adapter.js";
 
 export default function Cart() {
 
@@ -23,7 +23,7 @@ export default function Cart() {
 
         switch (messageType) {
             case cartBehaviourRequested:
-                const cartWidget = ContextSidePort("cart-element", messageData.cart, (mt, md) => context(mt, md));
+                const cartWidget = ContextPort("cart-element", messageData.cart, (mt, md) => context(mt, md));
                 context = Aggregate("cart", [
                     Collection(),
                     cartWidget,

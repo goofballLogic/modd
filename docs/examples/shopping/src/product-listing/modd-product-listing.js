@@ -1,6 +1,6 @@
 import { ensureStylesheet } from "../browser/elements.js";
 import { itemWasAddedToCart } from "../cart/cart-messages.js";
-import { ElementSidePort } from "../../lib/dom-adapter.js";
+import { ElementPort } from "../../lib/dom-adapter.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
@@ -16,7 +16,7 @@ class MODDExampleProductListing extends HTMLElement {
     }
 
     connectedCallback() {
-        this.#sendMessage = ElementSidePort("product-listing-element", this, this.receive.bind(this));
+        this.#sendMessage = ElementPort("product-listing-element", this, this.receive.bind(this));
     }
 
     disconnectedCallback() {
