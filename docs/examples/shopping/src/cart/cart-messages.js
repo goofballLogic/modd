@@ -5,8 +5,5 @@ export const cartUpdated = Symbol("Cart updated");
 export const itemQuantityWasChanged = Symbol("Item quantity was changed");
 export const itemWasRemovedFromCart = Symbol("Item was removed from cart");
 export const cart = {
-    productList: Symbol("Cart: product list"),
-    lineItemCleared: Symbol("Cart: line item cleared"),
-    decreaseLineItemQuantity: Symbol("Cart: decrease line item quantity"),
     checkoutRequested: Symbol("Cart: checkout requested")
 };

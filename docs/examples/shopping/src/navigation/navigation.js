@@ -8,7 +8,7 @@ export default function Navigation() {
         if (messageType === shoppingPageRequested) {
             const { cart, productListing } = messageData;
             return [
-                [productListBehaviourRequested],
+                [productListBehaviourRequested, { productListing }],
                 [cartBehaviourRequested, { cart }]
             ];
         }

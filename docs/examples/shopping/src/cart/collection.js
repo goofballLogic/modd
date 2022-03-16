@@ -1,7 +1,6 @@
 import { checkoutWasRequested } from "../checkout/checkout-messages.js";
-import { cart, cartUpdated, itemWasAddedToCart, itemsInCartStatusUpdated } from "./cart-messages.js";
-
-const clone = x => JSON.parse(JSON.stringify(x));
+import { availableProductsDetermined } from "../inventory/inventory-messages.js";
+import { cart, cartUpdated, itemWasAddedToCart, itemsInCartStatusUpdated, itemWasRemovedFromCart, itemQuantityWasChanged } from "./cart-messages.js";
 
 export default function Collection() {
 
@@ -12,13 +11,13 @@ export default function Collection() {
         switch (messageType) {
             case itemWasAddedToCart:
                 return addItemToCart(messageData);
-            case cart.productList:
+            case availableProductsDetermined:
                 storeProductDefinitions(messageData);
                 break;
-            case cart.lineItemCleared:
+            case itemWasRemovedFromCart:
                 return clearLineItem(messageData);
-            case cart.decreaseLineItemQuantity:
-                return decreaseLineItemQuantity(messageData);
+            case itemQuantityWasChanged:
+                return setLineItemQuantity(messageData);
             case cart.checkoutRequested:
                 return buildCheckoutRequested();
         }
@@ -31,14 +30,11 @@ export default function Collection() {
         }
     }
 
-    function decreaseLineItemQuantity(data) {
-        const { itemId } = data;
+    function setLineItemQuantity(data) {
+        const { itemId, quantity } = data;
         if (items.has(itemId)) {
-            const count = items.get(itemId);
-            if (count > 1) {
-                items.set(itemId, count - 1);
-                return buildMessagesAfterCartUpdated();
-            }
+            items.set(itemId, quantity);
+            return buildMessagesAfterCartUpdated();
         }
     }
 
@@ -54,6 +50,8 @@ export default function Collection() {
         items.set(itemId, newCount);
         return buildMessagesAfterCartUpdated()
     }
+
+    /* message builders */
 
     function buildCheckoutRequested() {
         const data = Object.fromEntries(

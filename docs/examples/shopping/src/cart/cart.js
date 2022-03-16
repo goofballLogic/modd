@@ -20,6 +20,7 @@ export default function Cart() {
     let context = null
 
     return async (messageType, messageData) => {
+
         switch (messageType) {
             case cartBehaviourRequested:
                 const cartWidget = ContextSidePort("cart-element", messageData.cart, (mt, md) => context(mt, md));
@@ -37,20 +38,12 @@ export default function Cart() {
                 break;
             case itemWasAddedToCart:
                 if (context)
-                    await context(itemWasAddedToCart, asCartItem(messageData));
+                    await context(itemWasAddedToCart, messageData);
                 break;
             case availableProductsDetermined:
                 if (context)
-                    await context(cart.productList, asCartProductList(messageData));
+                    await context(availableProductsDetermined, messageData);
                 break;
         }
     }
-}
-
-function asCartItem({ itemId }) {
-    return { itemId };
-}
-
-function asCartProductList(messageData) {
-    return JSON.parse(JSON.stringify(messageData));
 }

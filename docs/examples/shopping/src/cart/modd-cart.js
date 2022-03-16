@@ -1,5 +1,5 @@
 import { ensureStylesheet } from "../browser/elements.js";
-import { cartBehaviourRequested, itemsInCartStatusUpdated, cart } from "./cart-messages.js";
+import { cartBehaviourRequested, itemsInCartStatusUpdated, cart, itemWasRemovedFromCart, itemQuantityWasChanged } from "./cart-messages.js";
 import { ElementSidePort } from "../../lib/dom-adapter.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
@@ -57,11 +57,12 @@ class MODDExampleCart extends HTMLElement {
             switch (data.command) {
                 case "clear":
                     e.preventDefault();
-                    this.#sendMessage(cart.lineItemCleared, { itemId: data.itemId });
+                    this.#sendMessage(itemWasRemovedFromCart, { itemId: data.itemId });
                     break;
-                case "reduce":
+                case "set-quantity":
                     e.preventDefault();
-                    this.#sendMessage(cart.decreaseLineItemQuantity, { itemId: data.itemId });
+                    const newQuantity = Number(data.newQuantity || "0");
+                    this.#sendMessage(itemQuantityWasChanged, { itemId: data.itemId, quantity: newQuantity });
                     break;
             }
             if (e.target.classList.contains("checkout")) {
@@ -121,7 +122,8 @@ function renderItem(item) {
                 <button name="command" value="clear">remove</button>
                 <span class="quantity">${item.quantity ?? "?"}</span>
                 <span class="title">${item.title ?? "?"}</span>
-                <button name="command" value="reduce" ${decreaseEnabled ? "" : "disabled"}>
+                <input type="hidden" name="newQuantity" value="${item.quantity ? item.quantity - 1 : 0}" />
+                <button name="command" value="set-quantity" ${decreaseEnabled ? "" : "disabled"}>
                     less
                 </button>
             </form>
