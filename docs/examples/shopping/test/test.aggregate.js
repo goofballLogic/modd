@@ -1,5 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Aggregate, { parentAggregateCreated } from "../lib/aggregate.js";
+import Aggregate from "../lib/aggregate.js";
 
 describe("Given an aggregate with a child entity", function () {
 
@@ -120,9 +120,8 @@ function entitySpyMapper(fromMessageType, toMessageType, toMessageData, ...args)
 function EventfulEntity(eventMessageType) {
     let aggregate;
     const handler = async (messageType, messageData) => {
-        if (messageType == parentAggregateCreated) {
-            aggregate = messageData;
-        }
+        if (typeof messageType === "function")
+            aggregate = messageType;
     };
     handler.triggerEvent = async function (eventName) {
         // send a message to the aggregate that an event occurred

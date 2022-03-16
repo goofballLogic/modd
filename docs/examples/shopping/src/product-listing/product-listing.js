@@ -1,5 +1,5 @@
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
-import Aggregate, { parentAggregateCreated } from "../../lib/aggregate.js";
+import Aggregate from "../../lib/aggregate.js";
 import { productListBehaviourRequested } from "./product-listing-messages.js";
 import { itemWasAddedToCart } from "../cart/cart-messages.js";
 import Forwarder from "../../lib/forwarder.js";
@@ -18,6 +18,10 @@ export default function ProductListing() {
     let context;
 
     return async (messageType, messageData) => {
+        if (typeof messageType === "function") {
+            parentAggregate = messageType;
+            return;
+        }
         switch (messageType) {
             case productListBehaviourRequested:
                 const productListWidget = ContextPort("product listing", messageData.productListing, (mt, md) => context(mt, md));
@@ -33,9 +37,6 @@ export default function ProductListing() {
                         messageData
                     )
                 }
-                break;
-            case parentAggregateCreated:
-                parentAggregate = messageData;
                 break;
         }
     }

@@ -1,4 +1,4 @@
-import Aggregate, { parentAggregateCreated } from "../../lib/aggregate.js";
+import Aggregate from "../../lib/aggregate.js";
 import Forwarder from "../../lib/forwarder.js";
 import { cartBehaviourRequested, cartUpdated, itemsInCartStatusUpdated, itemWasAddedToCart } from "./cart-messages.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
@@ -21,6 +21,11 @@ export default function Cart() {
 
     return async (messageType, messageData) => {
 
+        if (typeof messageType === "function") {
+            parentAggregate = messageType;
+            return;
+        }
+
         switch (messageType) {
             case cartBehaviourRequested:
                 const cartWidget = ContextPort("cart-element", messageData.cart, (mt, md) => context(mt, md));
@@ -32,9 +37,6 @@ export default function Cart() {
                     forwardCheckoutWasRequestedToParent
                 ])
                 await context(cartBehaviourRequested, { enabled: true })
-                break;
-            case parentAggregateCreated:
-                parentAggregate = messageData;
                 break;
             case itemWasAddedToCart:
                 if (context)

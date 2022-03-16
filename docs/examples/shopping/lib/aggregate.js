@@ -1,5 +1,3 @@
-export const parentAggregateCreated = Symbol("Parent aggregate created");
-
 export default function Aggregate(aggregateName, components = []) {
 
     if (!components.every(x => x))
@@ -15,7 +13,7 @@ export default function Aggregate(aggregateName, components = []) {
         }
     };
 
-    send(parentAggregateCreated, aggregate);
+    send(aggregate);
 
     return aggregate;
 
