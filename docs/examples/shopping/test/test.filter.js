@@ -1,71 +1,75 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
 import Filter from "../lib/filter.js";
 
-describe("Given an entity", () => {
+describe("Filter", () =>
 
-    const entity = (messageType, messageData) => { entity.messages.push([messageType, messageData]); };
+    describe("Given an entity", () => {
 
-    beforeEach(() => {
-        entity.messages = [];
-    });
+        const entity = (messageType, messageData) => { entity.messages.push([messageType, messageData]); };
 
-    describe("And a singleton filter", () => {
+        beforeEach(() => {
+            entity.messages = [];
+        });
 
-        const applesPurchased = Symbol("Apples purchased");
-        const orangesPurchased = Symbol("Oranges purchased");
+        describe("And a singleton filter", () => {
 
-        const entityFilter = Filter(applesPurchased, entity);
+            const applesPurchased = Symbol("Apples purchased");
+            const orangesPurchased = Symbol("Oranges purchased");
 
-        describe("When the filter receives messages of multiple types", () => {
+            const entityFilter = Filter(applesPurchased, entity);
 
-            beforeEach(() => {
-                entityFilter(applesPurchased, 1);
-                entityFilter(orangesPurchased, 2);
-                entityFilter(applesPurchased, 3);
-                entityFilter(orangesPurchased, 4);
-            });
+            describe("When the filter receives messages of multiple types", () => {
 
-            it("Then the entity should have only received the filtered messages", () => {
+                beforeEach(() => {
+                    entityFilter(applesPurchased, 1);
+                    entityFilter(orangesPurchased, 2);
+                    entityFilter(applesPurchased, 3);
+                    entityFilter(orangesPurchased, 4);
+                });
 
-                expect(entity.messages).to.deep.equal([
-                    [applesPurchased, 1],
-                    [applesPurchased, 3]
-                ]);
+                it("Then the entity should have only received the filtered messages", () => {
+
+                    expect(entity.messages).to.deep.equal([
+                        [applesPurchased, 1],
+                        [applesPurchased, 3]
+                    ]);
+
+                });
 
             });
 
         });
 
-    });
+        describe("And a multi-filter", () => {
 
-    describe("And a multi-filter", () => {
+            const applesPurchased = Symbol("Apples purchased");
+            const orangesPurchased = Symbol("Oranges purchased");
+            const bananasPurchased = Symbol("Bananas purchased");
 
-        const applesPurchased = Symbol("Apples purchased");
-        const orangesPurchased = Symbol("Oranges purchased");
-        const bananasPurchased = Symbol("Bananas purchased");
+            const entityFilter = Filter([applesPurchased, bananasPurchased], entity);
 
-        const entityFilter = Filter([applesPurchased, bananasPurchased], entity);
-
-        describe("When the filter receives multiple messages", () => {
+            describe("When the filter receives multiple messages", () => {
 
 
-            beforeEach(() => {
-                entityFilter(applesPurchased, 1);
-                entityFilter(orangesPurchased, 2);
-                entityFilter(bananasPurchased, 3);
-            });
+                beforeEach(() => {
+                    entityFilter(applesPurchased, 1);
+                    entityFilter(orangesPurchased, 2);
+                    entityFilter(bananasPurchased, 3);
+                });
 
-            it("Then the entity should have only received the filtered messages", () => {
+                it("Then the entity should have only received the filtered messages", () => {
 
-                expect(entity.messages).to.deep.equal([
-                    [applesPurchased, 1],
-                    [bananasPurchased, 3]
-                ]);
+                    expect(entity.messages).to.deep.equal([
+                        [applesPurchased, 1],
+                        [bananasPurchased, 3]
+                    ]);
+
+                });
 
             });
 
         });
 
-    });
+    })
 
-});
+);
