@@ -3,7 +3,7 @@ import Filter from "../lib/filter.js";
 
 describe("Given an entity", () => {
 
-    const entity = (messageData, messageType) => { entity.messages.push([messageData, messageType]); };
+    const entity = (messageType, messageData) => { entity.messages.push([messageType, messageData]); };
 
     beforeEach(() => {
         entity.messages = [];
