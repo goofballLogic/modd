@@ -6,46 +6,44 @@ import Collection from "./collection.js";
 import "./modd-cart.js";
 import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 import { ContextPort } from "../../lib/dom-adapter.js";
+import Output from "../../lib/output.js";
 
 export default function Cart() {
 
-    let parentAggregate;
+    return Output(send => {
 
-    const forawrdCartUpdatedToParent = Forwarder("cart -> parent: cartUpdated", cartUpdated, () => parentAggregate);
+        const forawrdCartUpdatedToParent = Forwarder("cart -> parent: cartUpdated", cartUpdated, send);
 
-    const forwardItemsInCartStatusUpdatedToParent = Forwarder("cart -> parent: itemsInCartStatusUpdated", itemsInCartStatusUpdated, () => parentAggregate);
+        const forwardItemsInCartStatusUpdatedToParent = Forwarder("cart -> parent: itemsInCartStatusUpdated", itemsInCartStatusUpdated, send);
 
-    const forwardCheckoutWasRequestedToParent = Forwarder("cart -> parent: checkoutWasRequested", checkoutWasRequested, () => parentAggregate);
+        const forwardCheckoutWasRequestedToParent = Forwarder("cart -> parent: checkoutWasRequested", checkoutWasRequested, send);
 
-    let context = null
+        let context = null
 
-    return async (messageType, messageData) => {
+        return async (messageType, messageData) => {
 
-        if (typeof messageType === "function") {
-            parentAggregate = messageType;
-            return;
+            switch (messageType) {
+                case cartBehaviourRequested:
+                    const cartWidget = ContextPort("cart-element", messageData.cart, (mt, md) => context(mt, md));
+                    context = Aggregate("cart", [
+                        Collection(),
+                        cartWidget,
+                        forawrdCartUpdatedToParent,
+                        forwardItemsInCartStatusUpdatedToParent,
+                        forwardCheckoutWasRequestedToParent
+                    ])
+                    await context(cartBehaviourRequested, { enabled: true })
+                    break;
+                case itemWasAddedToCart:
+                    if (context)
+                        await context(itemWasAddedToCart, messageData);
+                    break;
+                case availableProductsDetermined:
+                    if (context)
+                        await context(availableProductsDetermined, messageData);
+                    break;
+            }
         }
+    });
 
-        switch (messageType) {
-            case cartBehaviourRequested:
-                const cartWidget = ContextPort("cart-element", messageData.cart, (mt, md) => context(mt, md));
-                context = Aggregate("cart", [
-                    Collection(),
-                    cartWidget,
-                    forawrdCartUpdatedToParent,
-                    forwardItemsInCartStatusUpdatedToParent,
-                    forwardCheckoutWasRequestedToParent
-                ])
-                await context(cartBehaviourRequested, { enabled: true })
-                break;
-            case itemWasAddedToCart:
-                if (context)
-                    await context(itemWasAddedToCart, messageData);
-                break;
-            case availableProductsDetermined:
-                if (context)
-                    await context(availableProductsDetermined, messageData);
-                break;
-        }
-    }
 }

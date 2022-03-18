@@ -1,8 +1,4 @@
-export default function Forwarder(name, messageTypeToForward, recipient) {
-
-    const send = typeof recipient === "function"
-        ? (...args) => (recipient())(...args)
-        : recipient;
+export default function Forwarder(name, messageTypeToForward, send) {
 
     const correlationId = Symbol(name)
 
