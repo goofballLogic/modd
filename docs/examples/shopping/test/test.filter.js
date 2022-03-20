@@ -1,7 +1,8 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
 import Filter from "../lib/filter.js";
+import { Logged } from "../lib/log.js";
 
-describe("Filter", () =>
+describe("Filter", () => {
 
     describe("Given an entity", () => {
 
@@ -20,11 +21,15 @@ describe("Filter", () =>
 
             describe("When the filter receives messages of multiple types", () => {
 
-                beforeEach(() => {
-                    entityFilter(applesPurchased, 1);
-                    entityFilter(orangesPurchased, 2);
-                    entityFilter(applesPurchased, 3);
-                    entityFilter(orangesPurchased, 4);
+                let received;
+
+                beforeEach(async () => {
+                    received = [
+                        await entityFilter(applesPurchased, 1),
+                        await entityFilter(orangesPurchased, 2),
+                        await entityFilter(applesPurchased, 3),
+                        await entityFilter(orangesPurchased, 4)
+                    ].reduce((arr, messages) => messages ? arr.concat(messages) : arr, []);
                 });
 
                 it("Then the entity should have only received the filtered messages", () => {
@@ -36,8 +41,52 @@ describe("Filter", () =>
 
                 });
 
+                it("Then the allowed messages should be logged", () => {
+
+                    expect(received).to.have.lengthOf(2);
+                    expect(received[0]).deep.equal([
+                        Logged,
+                        {
+                            level: "debug",
+                            message: ["Sent: Apples purchased"],
+                            source: "Filter entity"
+                        }
+                    ]);
+
+                });
+
             });
 
+        });
+
+        describe("And a singleton filter with a name", () => {
+
+            const applesPurchased = Symbol("Apples purchased");
+            const orangesPurchased = Symbol("Oranges purchased");
+            const entityFilter = Filter("applesPurchased -> entity", applesPurchased, entity);
+
+            describe("When the filter receives messages of multiple types", () => {
+
+                let output = [];
+                beforeEach(async () => {
+                    output = [];
+                    output.push(...(await entityFilter(applesPurchased, 1) || []));
+                    output.push(...(await entityFilter(orangesPurchased, 2) || []));
+                });
+
+                it("Then the allowed messages should be logged using the name", () => {
+
+                    expect(output).to.have.lengthOf(1);
+                    expect(output[0]).to.deep.equal(
+                        [Logged, {
+                            "level": "debug",
+                            "source": "applesPurchased -> entity",
+                            "message": ["Sent: Apples purchased"]
+                        }]
+                    );
+
+                });
+            });
         });
 
         describe("And a multi-filter", () => {
@@ -70,6 +119,6 @@ describe("Filter", () =>
 
         });
 
-    })
+    });
 
-);
+});

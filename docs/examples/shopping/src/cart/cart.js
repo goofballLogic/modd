@@ -6,11 +6,11 @@ import Collection from "./collection.js";
 import "./modd-cart.js";
 import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 import { ContextPort } from "../../lib/dom-adapter.js";
-import Output from "../../lib/output.js";
+import Outbound from "../../lib/outbound.js";
 
 export default function Cart() {
 
-    return Output(send => {
+    return Outbound(send => {
 
         const forawrdCartUpdatedToParent = Forwarder("cart -> parent: cartUpdated", cartUpdated, send);
 
@@ -44,6 +44,7 @@ export default function Cart() {
                     break;
             }
         }
+
     });
 
 }

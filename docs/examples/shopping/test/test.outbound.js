@@ -1,7 +1,7 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Output from "../lib/output.js";
+import Outbound from "../lib/outbound.js";
 
-describe("Output", () =>
+describe("Outbound", () => {
 
     describe("Given an entity which broadcasts on an interval", () => {
 
@@ -10,7 +10,7 @@ describe("Output", () =>
         const heartbeatStopRequested = Symbol("heartbeat stop requested");
 
         function Heartbeat(delay) {
-            return Output(send => {
+            return Outbound(send => {
                 let count = 0;
                 function beat() {
                     count++;
@@ -73,6 +73,81 @@ describe("Output", () =>
 
         });
 
-    })
+    });
 
-);
+    describe("Given an entity using a named outbound", () => {
+
+        let received;
+        const entity = Outbound("the entity", _send => (...args) => received.push(args));
+        beforeEach(() => {
+
+            received = [];
+
+        });
+
+        describe("When a message is sent", () => {
+
+            const messageType = Symbol("The message type");
+            beforeEach(async () => {
+
+                await entity(messageType, "hello");
+
+            });
+
+            it("Then the entity receives the message", () => {
+
+                expect(received).to.have.lengthOf(1);
+                expect(received[0]).to.deep.equal([messageType, "hello"]);
+
+            });
+
+        });
+
+    });
+
+    describe("Given an entity using outbound", () => {
+
+        let received;
+        let triggerSend;
+        const entity = Outbound(send => {
+            triggerSend = send;
+            return (...args) => { received.push(args); };
+        });
+        beforeEach(() => {
+
+            received = [];
+
+        });
+
+        describe("When the entity sends an outbound message with a data object", () => {
+
+            const outboundMessageType = Symbol("Outbound message");
+            let outboundMessageData;
+            beforeEach(() => {
+
+                outboundMessageData = { message: "hello" };
+                triggerSend(outboundMessageType, outboundMessageData);
+
+            });
+
+            describe("But the outbound message is sent back to the entity", () => {
+
+                beforeEach(async () => {
+
+                    await entity(outboundMessageType, outboundMessageData);
+
+                });
+
+                it("Then the entity should not receive the returned message", () => {
+
+                    expect(received).to.have.lengthOf(0);
+
+                });
+
+            });
+
+        });
+
+    });
+
+});

@@ -102,6 +102,43 @@ describe("Aggregate", () => {
 
     });
 
+    describe("Given an aggregate with no child entities", function () {
+
+        let testAggregate;
+        beforeEach(() => {
+            testAggregate = Aggregate("test aggregate");
+        });
+
+        describe("When a child entity is sent to the aggregate", function () {
+
+            let received;
+            const testEntity = (...args) => { received.push(args); }
+            beforeEach(async () => {
+                received = [];
+                await testAggregate(testEntity);
+            });
+
+            describe("And a message is sent via the aggregate", () => {
+
+                const helloWorld = Symbol("Hello world");
+                beforeEach(async () => {
+                    await testAggregate(helloWorld, "hi!");
+                });
+
+                it("Then the child entity receives the message", () => {
+
+                    expect(received).to.have.lengthOf(1);
+                    expect(received[0]).to.deep.equal([
+                        helloWorld,
+                        "hi!"
+                    ]);
+
+                });
+
+            });
+        });
+    });
+
 });
 
 function entitySpy() {

@@ -1,27 +1,37 @@
 export default function Aggregate(aggregateName, components = []) {
 
+    components = [...components];
     if (!components.every(x => x))
         throw Error("Non entity supplied in list of components");
 
     const backlog = [];
     let processingBacklog = false;
 
-    const aggregate = async (messageType, messageData) => {
-        backlog.push([messageType, messageData]);
-        if (!processingBacklog) {
-            await processBacklog();
+    const aggregate = async (...args) => {
+        if (typeof args[0] === "function") {
+            components.push(args[0]);
+        } else {
+            await processNormalMessage(...args);
         }
     };
+
+    aggregate.id = aggregateName;
 
     send(aggregate);
 
     return aggregate;
 
+    async function processNormalMessage(messageType, messageData) {
+        backlog.push([messageType, messageData]);
+        if (!processingBacklog) {
+            await processBacklog();
+        }
+    }
+
     function inspectBacklog() {
         console.group(aggregateName);
-        for (const x of backlog) {
-            console.log(x);
-        }
+        console.log("Backlog size ", backlog.length);
+        console.log(...backlog);
         console.groupEnd();
     }
 
@@ -39,11 +49,19 @@ export default function Aggregate(aggregateName, components = []) {
     }
 
     async function send(messageType, messageData) {
-        for (const component of components) {
+
+        const snapshot = [...components];
+        for (const component of snapshot) {
+
             const received = await component(messageType, messageData);
             if (Array.isArray(received)) {
+
                 backlog.push(...received.filter(x => Array.isArray(x)));
+
             }
+
         }
+
     }
+
 }

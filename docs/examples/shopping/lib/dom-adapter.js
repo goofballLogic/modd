@@ -37,7 +37,6 @@ function Port({
 }) {
 
     function messageHandler(e) {
-
         const [messageType, messageData] = e.detail;
 
         console.group("port:", name);
@@ -48,7 +47,6 @@ function Port({
     }
 
     element.addEventListener(messageEventToHandle, messageHandler);
-
     let isDisposed = false;
 
     const port = async (messageType, messageData) => {
