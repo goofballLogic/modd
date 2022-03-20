@@ -13,6 +13,7 @@ modd-product-listing ul li {
     padding: 10pt;
     box-shadow: 0 0 1px 0 silver;
     grid-template-columns: 100pt 1fr;
+    min-height: 120pt;
 }
 
 modd-product-listing li>* {
@@ -22,6 +23,7 @@ modd-product-listing li>* {
 modd-product-listing li .thumbnail {
     float: left;
     max-height: 100pt;
+    max-width: 80pt;
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 1;
