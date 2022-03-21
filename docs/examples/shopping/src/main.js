@@ -14,12 +14,12 @@ import { availableProductsDetermined } from "./inventory/inventory-messages.js";
 
 const domain = Aggregate("shopping domain", [
     Cart(),
-    Filter([productListBehaviourRequested, availableProductsDetermined], ProductListing()),
+    ProductListing(),
     Inventory(),
     Navigation(),
     Checkout(),
     Outcome(),
-    ConsoleLog("trace")
+    ConsoleLog()
 ]);
 
 domain(

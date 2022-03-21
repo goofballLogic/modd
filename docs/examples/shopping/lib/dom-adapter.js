@@ -10,7 +10,7 @@ export function ContextPort(name, elementSelector, send) {
 
 
     return Port({
-        name,
+        name: `<-: ${name}`,
         element,
         messageProcessor: send,
         messageEventToHandle: messageSentEvent,
@@ -23,7 +23,7 @@ export function ContextPort(name, elementSelector, send) {
 export function ElementPort(name, element, receive) {
 
     return Port({
-        name,
+        name: `:-> ${name}`,
         element,
         messageProcessor: receive,
         messageEventToHandle: messageReceivedEvent,
@@ -46,7 +46,7 @@ function Port({
         const [messageType, messageData] = e.detail;
 
         log({
-            source: `port: ${name}`,
+            source: name,
             message: ["handling", messageType, messageData],
             level: messageType === Logged ? "logging" : "debug"
         });

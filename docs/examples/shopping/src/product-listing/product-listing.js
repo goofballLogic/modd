@@ -16,34 +16,34 @@ export default function ProductListing() {
             Filter(
                 "Product list behaviour requested -> add context port",
                 productListBehaviourRequested,
-                connectToProductListingElement
+                (_, messageData) => {
+
+                    // create a filtered port to the element
+                    const productListingElement = Filter(
+                        "Available products determined -> product listing element context port",
+                        availableProductsDetermined,
+                        ContextPort(
+                            "product listing element context",
+                            messageData.productListing,
+                            outside
+                        )
+                    );
+                    // add the port to our aggregate
+                    productListing(productListingElement);
+
+                }
             ),
             Filter(
                 "outside <- product listing",
                 [itemWasAddedToCart, Logged],
                 outside
-            ),
-            (mt, md) => console.log("pl", mt, md)
+            )
         ]);
 
-        function connectToProductListingElement(_, messageData) {
-
-            // create a filtered port to the element
-            const productListingElement = Filter(
-                "Available products determined -> product listing element context port",
-                availableProductsDetermined,
-                ContextPort(
-                    "product listing element context",
-                    messageData.productListing,
-                    outside
-                )
-            );
-            // add the port to our aggregate
-            productListing(productListingElement);
-
-        }
-
-        return productListing;
+        return Filter(
+            [productListBehaviourRequested, availableProductsDetermined],
+            productListing
+        );
 
     });
 
