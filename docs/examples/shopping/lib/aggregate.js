@@ -1,3 +1,5 @@
+import { Logged } from "./log.js";
+
 export default function Aggregate(aggregateName, components = []) {
 
     components = [...components];
@@ -28,24 +30,34 @@ export default function Aggregate(aggregateName, components = []) {
         }
     }
 
-    function inspectBacklog() {
-        console.group(aggregateName);
-        console.log("Backlog size ", backlog.length);
-        console.log(...backlog);
-        console.groupEnd();
-    }
-
     async function processBacklog() {
         processingBacklog = true;
         try {
             while (backlog.length) {
-                inspectBacklog();
-                const [messageType, messageData] = backlog.shift();
-                await send(messageType, messageData);
+                await processBacklogItem();
             }
         } finally {
             processingBacklog = false;
         }
+    }
+
+    async function processBacklogItem() {
+        const [messageType, messageData] = backlog.shift();
+        await send(messageType, messageData);
+        if (messageType !== Logged) {
+            await logSent(messageType);
+        }
+    }
+
+    async function logSent(messageType) {
+        await send(Logged, {
+            source: aggregateName,
+            message: [
+                `Sent ${messageType?.description}`,
+                `Remaining backlog size ${backlog.length}`
+            ],
+            level: "trace"
+        });
     }
 
     async function send(messageType, messageData) {
@@ -53,15 +65,21 @@ export default function Aggregate(aggregateName, components = []) {
         const snapshot = [...components];
         for (const component of snapshot) {
 
-            const received = await component(messageType, messageData);
-            if (Array.isArray(received)) {
-
-                backlog.push(...received.filter(x => Array.isArray(x)));
-
-            }
+            await sendTo(component, messageType, messageData);
 
         }
 
     }
 
+
+    async function sendTo(component, messageType, messageData) {
+
+        const received = await component(messageType, messageData);
+        if (Array.isArray(received)) {
+
+            backlog.push(...received.filter(x => Array.isArray(x)));
+
+        }
+
+    }
 }

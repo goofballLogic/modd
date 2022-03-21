@@ -1,5 +1,5 @@
 import Aggregate from "../../lib/aggregate.js";
-import Forwarder from "../../lib/forwarder.js";
+import Filter from "../../lib/filter.js";
 import { cartBehaviourRequested, cartUpdated, itemsInCartStatusUpdated, itemWasAddedToCart } from "./cart-messages.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 import Collection from "./collection.js";
@@ -12,11 +12,11 @@ export default function Cart() {
 
     return Outbound(send => {
 
-        const forawrdCartUpdatedToParent = Forwarder("cart -> parent: cartUpdated", cartUpdated, send);
+        const forawrdCartUpdatedToParent = Filter("cart -> parent: cartUpdated", cartUpdated, send);
 
-        const forwardItemsInCartStatusUpdatedToParent = Forwarder("cart -> parent: itemsInCartStatusUpdated", itemsInCartStatusUpdated, send);
+        const forwardItemsInCartStatusUpdatedToParent = Filter("cart -> parent: itemsInCartStatusUpdated", itemsInCartStatusUpdated, send);
 
-        const forwardCheckoutWasRequestedToParent = Forwarder("cart -> parent: checkoutWasRequested", checkoutWasRequested, send);
+        const forwardCheckoutWasRequestedToParent = Filter("cart -> parent: checkoutWasRequested", checkoutWasRequested, send);
 
         let context = null
 

@@ -7,6 +7,7 @@ import Aggregate from "../lib/aggregate.js";
 
 import { shoppingPageRequested } from "./navigation/navigation-messages.js";
 import { checkoutWasRequested } from "./checkout/checkout-messages.js";
+import { Logged } from "../lib/log.js";
 
 const domain = Aggregate("shopping domain", [
     Cart(),
@@ -14,7 +15,8 @@ const domain = Aggregate("shopping domain", [
     Inventory(),
     Navigation(),
     Checkout(),
-    Outcome()
+    Outcome(),
+    ConsoleLog()
 ]);
 
 domain(
@@ -35,4 +37,39 @@ function Outcome() {
             alert(`Checkout requested for ${digest}`);
         }
     }
+}
+
+function ConsoleLog(minLogLevel = "debug") {
+
+    const logLevels = {
+        "trace": 1,
+        "debug": 2,
+        "warn": 3,
+        "error": 4
+    };
+
+    minLogLevel = logLevels[minLogLevel];
+
+    return async (messageType, messageData) => {
+        if (messageType === Logged) {
+            const { level, message, source } = messageData;
+            const messageLogLevel = logLevels[level];
+            if (minLogLevel > messageLogLevel) return;
+
+            console.group(level.toUpperCase(), source);
+            for (const x of Array.isArray(message) ? message : [message]) {
+                switch (level) {
+                    case "error":
+                        console.error(x);
+                        break;
+                    case "warn":
+                        console.warn(x);
+                        break;
+                    default:
+                        console.log(x);
+                }
+            }
+            console.groupEnd();
+        }
+    };
 }

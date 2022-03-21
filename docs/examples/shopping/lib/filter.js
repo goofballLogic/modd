@@ -12,14 +12,19 @@ export default function Filter(...args) {
     return async (messageType, messageData) => {
         if (messages.includes(messageType)) {
             const result = asArray(await recipient(messageType, messageData));
-            return result.concat([
-                [Logged, {
+            // log that we are allowing it (unless it's a log message we're allowing)
+            if (messageType !== Logged) {
+
+                const logMessage = {
                     level: "debug",
                     source: name,
-                    message: [`Sent: ${messageType.description ?? "?"}`]
-                }]
-            ]);
+                    message: [`Sent: ${messageType.description ?? "?"}`],
+                };
+                result.push([Logged, logMessage]);
+
+            }
+            return result;
+
         }
     };
-
 };

@@ -6,22 +6,20 @@ import { ContextPort } from "../../lib/dom-adapter.js";
 import "./modd-product-listing.js";
 import Outbound from "../../lib/outbound.js";
 import Filter from "../../lib/filter.js";
+import { Logged } from "../../lib/log.js";
 
 export default function ProductListing() {
 
-    return Outbound("product listing", send => {
+    return Outbound("product listing", outside => {
 
-        const productListingContext = Aggregate("product listing", [
+        const productListing = Aggregate("product listing", [
             Filter(
                 "Product list behaviour requested -> add context port",
                 productListBehaviourRequested,
                 connectToProductListingElement
             ),
-            Filter(
-                "parent <- product listing",
-                itemWasAddedToCart,
-                send
-            )
+            Filter("outside <- product listing", itemWasAddedToCart, outside),
+            Filter("outside <- logged", Logged, outside)
         ]);
 
         function connectToProductListingElement(_, messageData) {
@@ -33,16 +31,16 @@ export default function ProductListing() {
                 ContextPort(
                     "product listing element context",
                     messageData.productListing,
-                    send
+                    outside
                 )
             );
 
             // add the port to our aggregate
-            productListingContext(productListingElement);
+            productListing(productListingElement);
 
         }
 
-        return productListingContext;
+        return productListing;
 
     });
 
