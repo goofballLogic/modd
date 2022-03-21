@@ -8,9 +8,6 @@ import Aggregate from "../lib/aggregate.js";
 import { shoppingPageRequested } from "./navigation/navigation-messages.js";
 import { checkoutWasRequested } from "./checkout/checkout-messages.js";
 import { Logged } from "../lib/log.js";
-import Filter from "../lib/filter.js";
-import { productListBehaviourRequested } from "./product-listing/product-listing-messages.js";
-import { availableProductsDetermined } from "./inventory/inventory-messages.js";
 
 const domain = Aggregate("shopping domain", [
     Cart(),
@@ -60,7 +57,9 @@ function ConsoleLog(minLogLevel = "debug") {
             const messageLogLevel = logLevels[level];
             if (minLogLevel > messageLogLevel) return;
 
-            console.group(level.toUpperCase(), source);
+            const firstSymbol = message.find(x => typeof x === "symbol");
+            const messageDescription = firstSymbol ? firstSymbol.description : "info";
+            console.groupCollapsed(level.toUpperCase(), source, ":", messageDescription);
             for (const x of Array.isArray(message) ? message : [message]) {
                 switch (level) {
                     case "error":
