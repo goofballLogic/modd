@@ -11,19 +11,31 @@ export default function Filter(...args) {
 
     return async (messageType, messageData) => {
         if (messages.includes(messageType)) {
-            const result = asArray(await recipient(messageType, messageData));
+            const result = [];
+
             // log that we are allowing it (unless it's a log message we're allowing)
             if (messageType !== Logged) {
 
+                const message = ["Allowing", messageType];
+                if (recipient?.id) message.push("to", recipient?.id);
                 const logMessage = {
-                    level: "debug",
+                    level: messageType === Logged ? "logging" : "trace",
                     source: name,
-                    message: [`Sent: ${messageType.description ?? "?"}`],
+                    message,
                 };
                 result.push([Logged, logMessage]);
 
             }
+
+            const output = await recipient(messageType, messageData);
+            if (output) {
+                for (x of output) {
+                    result.push(x);
+                }
+            }
+
             return result;
+
 
         }
     };

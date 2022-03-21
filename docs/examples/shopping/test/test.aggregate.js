@@ -18,16 +18,16 @@ describe("Aggregate", () => {
         describe("When I send the aggregate a message", function () {
 
             const testMessage = Symbol("Test message");
-            beforeEach(function () {
+            beforeEach(async function () {
 
-                testAggregate(testMessage, "hello");
+                await testAggregate(testMessage, "hello");
 
             });
 
             it("Then the entity receives the message", function () {
-                expect(testEntity.calls.length).to.equal(2);
+                expect(testEntity.calls.length).to.equal(4);
 
-                const [actualMessageType, actualMessageData] = testEntity.calls[1];
+                const [actualMessageType, actualMessageData] = testEntity.calls[3];
                 expect(actualMessageType).to.equal(testMessage);
                 expect(actualMessageData).to.equal("hello");
             });
@@ -60,9 +60,9 @@ describe("Aggregate", () => {
             });
 
             it("Then the entity receives Message B also", function () {
-                expect(testEntity.calls.length).to.equal(3);
+                expect(testEntity.calls.length).to.equal(6);
 
-                const [actualMessageType, actualMessageData] = testEntity.calls[2];
+                const [actualMessageType, actualMessageData] = testEntity.calls[5];
                 expect(actualMessageType).to.equal(messageB);
                 expect(actualMessageData).to.equal("b data");
             });
@@ -92,9 +92,9 @@ describe("Aggregate", () => {
             });
 
             it("Then other entities in the same aggregate should be notified", function () {
-                expect(normalEntity.calls.length).to.equal(2);
+                expect(normalEntity.calls.length).to.equal(4);
 
-                const [messageType, messageData] = normalEntity.calls[1];
+                const [messageType, messageData] = normalEntity.calls[3];
                 expect(messageType).to.equal(eventMessageType);
                 expect(messageData).to.equal("It's Christmas");
             });
@@ -127,8 +127,8 @@ describe("Aggregate", () => {
 
                 it("Then the child entity receives the message", () => {
 
-                    expect(received).to.have.lengthOf(1);
-                    expect(received[0]).to.deep.equal([
+                    expect(received).to.have.lengthOf(3);
+                    expect(received[2]).to.deep.equal([
                         helloWorld,
                         "hi!"
                     ]);

@@ -24,6 +24,13 @@ export default function Aggregate(aggregateName, components = []) {
     return aggregate;
 
     async function processNormalMessage(messageType, messageData) {
+        if (messageType !== Logged) {
+            backlog.push([Logged, {
+                source: aggregateName,
+                message: ["Received", messageType, new Error().stack],
+                level: "trace"
+            }]);
+        }
         backlog.push([messageType, messageData]);
         if (!processingBacklog) {
             await processBacklog();
@@ -43,20 +50,21 @@ export default function Aggregate(aggregateName, components = []) {
 
     async function processBacklogItem() {
         const [messageType, messageData] = backlog.shift();
-        await send(messageType, messageData);
         if (messageType !== Logged) {
             await logSent(messageType);
         }
+        await send(messageType, messageData);
     }
 
     async function logSent(messageType) {
         await send(Logged, {
             source: aggregateName,
             message: [
-                `Sent ${messageType?.description}`,
+                "Sent",
+                messageType,
                 `Remaining backlog size ${backlog.length}`
             ],
-            level: "trace"
+            level: messageType === Logged ? "logging" : "trace"
         });
     }
 

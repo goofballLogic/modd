@@ -1,5 +1,11 @@
 import { ensureStylesheet } from "../browser/elements.js";
-import { cartBehaviourRequested, itemsInCartStatusUpdated, cart, itemWasRemovedFromCart, itemQuantityWasChanged } from "./cart-messages.js";
+import {
+    cartBehaviourRequested,
+    itemsInCartStatusUpdated,
+    cart,
+    itemWasRemovedFromCart,
+    itemQuantityWasChanged
+} from "./cart-messages.js";
 import { ElementPort } from "../../lib/dom-adapter.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));

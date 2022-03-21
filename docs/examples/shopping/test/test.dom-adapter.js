@@ -1,5 +1,6 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
 import { ContextPort } from "../lib/dom-adapter.js";
+import { Logged } from "../lib/log.js";
 import "./MODDTestsExampleElement.js";
 
 describe("DOM Adapter", () => {
@@ -83,7 +84,7 @@ describe("DOM Adapter", () => {
                 it("Then the context should have received the sent message", () => {
 
                     const expected = [message3, "hello from the element"];
-                    expect(contextSideMessagesReceived).to.deep.equal([expected]);
+                    expect(contextSideMessagesReceived[3]).to.deep.equal(expected);
 
                 });
 
@@ -114,7 +115,9 @@ describe("DOM Adapter", () => {
 
                 it("Then the context should NOT have received the sent message", () => {
 
-                    expect(contextSideMessagesReceived).to.deep.equal([]);
+                    const nonLoggingContextSideMessagesReceived = contextSideMessagesReceived
+                        .filter(([mt, md]) => mt !== Logged)
+                    expect(nonLoggingContextSideMessagesReceived).to.deep.equal([]);
 
                 });
 

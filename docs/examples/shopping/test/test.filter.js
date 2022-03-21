@@ -47,8 +47,8 @@ describe("Filter", () => {
                     expect(received[0]).deep.equal([
                         Logged,
                         {
-                            level: "debug",
-                            message: ["Sent: Apples purchased"],
+                            level: "trace",
+                            message: ["Allowing", applesPurchased],
                             source: "Filter entity"
                         }
                     ]);
@@ -79,9 +79,9 @@ describe("Filter", () => {
                     expect(output).to.have.lengthOf(1);
                     expect(output[0]).to.deep.equal(
                         [Logged, {
-                            "level": "debug",
+                            "level": "trace",
                             "source": "applesPurchased -> entity",
-                            "message": ["Sent: Apples purchased"]
+                            "message": ["Allowing", applesPurchased]
                         }]
                     );
 

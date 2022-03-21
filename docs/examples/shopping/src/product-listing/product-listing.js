@@ -18,8 +18,12 @@ export default function ProductListing() {
                 productListBehaviourRequested,
                 connectToProductListingElement
             ),
-            Filter("outside <- product listing", itemWasAddedToCart, outside),
-            Filter("outside <- logged", Logged, outside)
+            Filter(
+                "outside <- product listing",
+                [itemWasAddedToCart, Logged],
+                outside
+            ),
+            (mt, md) => console.log("pl", mt, md)
         ]);
 
         function connectToProductListingElement(_, messageData) {
@@ -34,7 +38,6 @@ export default function ProductListing() {
                     outside
                 )
             );
-
             // add the port to our aggregate
             productListing(productListingElement);
 

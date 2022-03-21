@@ -20,6 +20,7 @@ export default function Outbound(...args) {
         const [, messageData] = args;
         if (isTaintable(messageData))
             messageData[outboundId] = true;
+
         outside(...args);
 
     };

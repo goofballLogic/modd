@@ -8,15 +8,18 @@ import Aggregate from "../lib/aggregate.js";
 import { shoppingPageRequested } from "./navigation/navigation-messages.js";
 import { checkoutWasRequested } from "./checkout/checkout-messages.js";
 import { Logged } from "../lib/log.js";
+import Filter from "../lib/filter.js";
+import { productListBehaviourRequested } from "./product-listing/product-listing-messages.js";
+import { availableProductsDetermined } from "./inventory/inventory-messages.js";
 
 const domain = Aggregate("shopping domain", [
     Cart(),
-    ProductListing(),
+    Filter([productListBehaviourRequested, availableProductsDetermined], ProductListing()),
     Inventory(),
     Navigation(),
     Checkout(),
     Outcome(),
-    ConsoleLog()
+    ConsoleLog("trace")
 ]);
 
 domain(
@@ -42,6 +45,7 @@ function Outcome() {
 function ConsoleLog(minLogLevel = "debug") {
 
     const logLevels = {
+        "logging": 0,
         "trace": 1,
         "debug": 2,
         "warn": 3,
