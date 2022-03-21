@@ -39,9 +39,14 @@ export default function Aggregate(aggregateName, components = []) {
 
     async function processBacklog() {
         processingBacklog = true;
+        let iterationCount = 0;
         try {
             while (backlog.length) {
                 await processBacklogItem();
+                if (++iterationCount > 1000) {
+                    console.error(backlog);
+                    throw new Error(`${aggregateName}: message loop stuck`);
+                }
             }
         } finally {
             processingBacklog = false;
@@ -79,13 +84,16 @@ export default function Aggregate(aggregateName, components = []) {
 
     }
 
-
     async function sendTo(component, messageType, messageData) {
 
         const received = await component(messageType, messageData);
         if (Array.isArray(received)) {
 
-            backlog.push(...received.filter(x => Array.isArray(x)));
+            for (const [messageType, messageData] of received) {
+
+                // invoke async method synchronously to allow event loop to drain
+                aggregate(messageType, messageData);
+            }
 
         }
 

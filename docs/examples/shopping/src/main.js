@@ -42,7 +42,6 @@ function Outcome() {
 function ConsoleLog(minLogLevel = "debug") {
 
     const logLevels = {
-        "logging": 0,
         "trace": 1,
         "debug": 2,
         "warn": 3,

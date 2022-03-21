@@ -45,11 +45,13 @@ function Port({
     function messageHandler(e) {
         const [messageType, messageData] = e.detail;
 
-        log({
-            source: name,
-            message: ["handling", messageType, messageData],
-            level: messageType === Logged ? "logging" : "debug"
-        });
+        if (messageType !== Logged) {
+            log({
+                source: name,
+                message: ["handling", messageType, messageData],
+                level: messageType === Logged ? "logging" : "debug"
+            });
+        }
 
         messageProcessor(messageType, messageData);
     }
@@ -63,11 +65,13 @@ function Port({
             throw new Error(`Port "${name}" is disposed trying to send "${messageType?.description}"`);
         }
 
-        log({
-            source: `port: ${name}`,
-            message: ["dispatching", messageType, messageData],
-            level: messageType === Logged ? "logging" : "trace"
-        });
+        if (messageType !== Logged) {
+            log({
+                source: `port: ${name}`,
+                message: ["dispatching", messageType, messageData],
+                level: messageType === Logged ? "logging" : "trace"
+            });
+        }
 
         dispatch(element, messageEventToDispatch, messageType, messageData);
     };

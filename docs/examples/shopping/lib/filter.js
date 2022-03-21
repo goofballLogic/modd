@@ -29,9 +29,7 @@ export default function Filter(...args) {
 
             const output = await recipient(messageType, messageData);
             if (output) {
-                for (x of output) {
-                    result.push(x);
-                }
+                result.push(...output);
             }
 
             return result;

@@ -4,47 +4,53 @@ import { productListBehaviourRequested } from "./product-listing-messages.js";
 import { itemWasAddedToCart } from "../cart/cart-messages.js";
 import { ContextPort } from "../../lib/dom-adapter.js";
 import "./modd-product-listing.js";
-import Outbound from "../../lib/outbound.js";
-import Filter from "../../lib/filter.js";
+import Permit from "../../lib/filter.js";
 import { Logged } from "../../lib/log.js";
+import Context from "../../lib/context.js";
 
 export default function ProductListing() {
 
-    return Outbound("product listing", outside => {
+    return Context(
+        "product listing",
+        [
+            productListBehaviourRequested,
+            availableProductsDetermined
+        ],
+        [
+            itemWasAddedToCart,
+            Logged
+        ],
+        outside => {
 
-        const productListing = Aggregate("product listing", [
-            Filter(
-                "Product list behaviour requested -> add context port",
-                productListBehaviourRequested,
-                (_, messageData) => {
+            const productListing =
+                Aggregate(
+                    "product listing",
+                    [
+                        Permit(
+                            productListBehaviourRequested,
+                            ProductListingElement
+                        ),
+                        outside
+                    ]
+                );
 
-                    // create a filtered port to the element
-                    const productListingElement = Filter(
-                        "Available products determined -> product listing element context port",
+            function ProductListingElement(_, messageData) {
+                return [[
+                    Permit(
                         availableProductsDetermined,
                         ContextPort(
-                            "product listing element context",
+                            "product listing context",
                             messageData.productListing,
-                            outside
+                            productListing
                         )
-                    );
-                    // add the port to our aggregate
-                    productListing(productListingElement);
+                    )
+                ]];
+            }
 
-                }
-            ),
-            Filter(
-                "outside <- product listing",
-                [itemWasAddedToCart, Logged],
-                outside
-            )
-        ]);
+            return productListing;
 
-        return Filter(
-            [productListBehaviourRequested, availableProductsDetermined],
-            productListing
-        );
+        });
 
-    });
+
 
 }

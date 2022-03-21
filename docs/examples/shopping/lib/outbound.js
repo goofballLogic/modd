@@ -17,11 +17,15 @@ export default function Outbound(...args) {
     // a function to send things to the outside
     const sendToOutside = (...args) => {
 
-        const [, messageData] = args;
-        if (isTaintable(messageData))
-            messageData[outboundId] = true;
+        const [messageType, messageData] = args;
+        if (typeof messageType !== "function") {
 
-        outside(...args);
+            if (isTaintable(messageData))
+                messageData[outboundId] = true;
+
+            outside(...args);
+
+        }
 
     };
 
@@ -32,7 +36,7 @@ export default function Outbound(...args) {
     if (typeof inside !== "function")
         throw new Error("No entity returned from inner factory");
 
-    return (...args) => {
+    const inbound = (...args) => {
 
         // is this the outside entity?
         if (typeof args[0] === "function") {
@@ -51,5 +55,7 @@ export default function Outbound(...args) {
         return inside(...args);
 
     };
+    inbound.id = `${name} inbound`;
+    return inbound;
 
 }
