@@ -24,19 +24,21 @@ describe("Filter", () => {
                 let received;
 
                 beforeEach(async () => {
-                    received = [
+
+                    received = [].concat(
                         await entityFilter(applesPurchased, 1),
                         await entityFilter(orangesPurchased, 2),
                         await entityFilter(applesPurchased, 3),
                         await entityFilter(orangesPurchased, 4)
-                    ].reduce((arr, messages) => messages ? arr.concat(messages) : arr, []);
+                    ).filter(x => x);
+
                 });
 
                 it("Then the entity should have only received the filtered messages", () => {
 
                     expect(entity.messages).to.deep.equal([
                         [applesPurchased, 1],
-                        [applesPurchased, 3]
+                        [applesPurchased, 3],
                     ]);
 
                 });
