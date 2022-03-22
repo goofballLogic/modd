@@ -3,28 +3,28 @@ import Aggregate from "../lib/aggregate.js";
 
 describe("Aggregate", () => {
 
-    describe("Given an aggregate with a child entity", function () {
+    describe("Given an aggregate with a child entity", () => {
 
         let testEntity;
         let testAggregate;
 
-        beforeEach(function () {
+        beforeEach(() => {
 
             testEntity = entitySpy();
             testAggregate = Aggregate("Test aggregate", [testEntity]);
 
         });
 
-        describe("When I send the aggregate a message", function () {
+        describe("When I send the aggregate a message", () => {
 
             const testMessage = Symbol("Test message");
-            beforeEach(async function () {
+            beforeEach(async () => {
 
                 await testAggregate(testMessage, "hello");
 
             });
 
-            it("Then the entity receives the message", function () {
+            it("Then the entity receives the message", () => {
                 expect(testEntity.calls.length).to.equal(4);
 
                 const [actualMessageType, actualMessageData] = testEntity.calls[3];
@@ -36,33 +36,31 @@ describe("Aggregate", () => {
 
     });
 
-    describe("Given an entity which responds to message A with message B", function () {
+    describe("Given an entity which responds to message A with message B", () => {
 
         let testEntity;
         const messageA = Symbol("Message A");
         const messageB = Symbol("Message B");
 
-        beforeEach(function () {
+        beforeEach(() => {
 
             testEntity = entitySpyMapper(messageA, messageB, "b data");
 
         });
 
-        describe("When I send message A to an aggregate containing the entity", function () {
+        describe("When I send message A to an aggregate containing the entity", () => {
 
             let testAggregate;
 
-            beforeEach(async function () {
+            beforeEach(async () => {
 
                 testAggregate = Aggregate("Test aggregate: A->B", [testEntity]);
                 await testAggregate(messageA, "data");
 
             });
 
-            it("Then the entity receives Message B also", function () {
-                expect(testEntity.calls.length).to.equal(6);
-
-                const [actualMessageType, actualMessageData] = testEntity.calls[5];
+            it("Then the entity receives Message B also", () => {
+                const [actualMessageType, actualMessageData] = testEntity.calls[testEntity.calls.length - 1];
                 expect(actualMessageType).to.equal(messageB);
                 expect(actualMessageData).to.equal("b data");
             });
@@ -71,12 +69,12 @@ describe("Aggregate", () => {
 
     });
 
-    describe("Given an entity which responds to external events by emitting a message", function () {
+    describe("Given an entity which responds to external events by emitting a message", () => {
 
         let eventfulEntity, normalEntity;
         const eventMessageType = Symbol("Event occurred");
 
-        beforeEach(function () {
+        beforeEach(() => {
             eventfulEntity = EventfulEntity(eventMessageType);
             normalEntity = entitySpy();
             Aggregate(
@@ -85,13 +83,13 @@ describe("Aggregate", () => {
             );
         });
 
-        describe("When an event gets triggered", function () {
+        describe("When an event gets triggered", () => {
 
-            beforeEach(async function () {
+            beforeEach(async () => {
                 await eventfulEntity.triggerEvent("It's Christmas");
             });
 
-            it("Then other entities in the same aggregate should be notified", function () {
+            it("Then other entities in the same aggregate should be notified", () => {
                 expect(normalEntity.calls.length).to.equal(4);
 
                 const [messageType, messageData] = normalEntity.calls[3];
@@ -102,20 +100,27 @@ describe("Aggregate", () => {
 
     });
 
-    describe("Given an aggregate with no child entities", function () {
+    describe("Given an aggregate with no child entities", () => {
 
         let testAggregate;
         beforeEach(() => {
             testAggregate = Aggregate("test aggregate");
         });
 
-        describe("When a child entity is sent to the aggregate", function () {
+        describe("When a child entity is sent to the aggregate", () => {
 
             let received;
             const testEntity = (...args) => { received.push(args); }
             beforeEach(async () => {
                 received = [];
                 await testAggregate(testEntity);
+            });
+
+            it("Then the aggregate connects to the child entity", () => {
+
+                expect(received).to.have.lengthOf(1);
+                expect(received[0]).to.deep.equal([testAggregate]);
+
             });
 
             describe("And a message is sent via the aggregate", () => {
@@ -127,16 +132,15 @@ describe("Aggregate", () => {
 
                 it("Then the child entity receives the message", () => {
 
-                    expect(received).to.have.lengthOf(3);
-                    expect(received[2]).to.deep.equal([
-                        helloWorld,
-                        "hi!"
-                    ]);
+                    const message = received[received.length - 1];
+                    expect(message).to.deep.equal([helloWorld, "hi!"]);
 
                 });
 
             });
+
         });
+
     });
 
 });
@@ -160,7 +164,7 @@ function entitySpyMapper(fromMessageType, toMessageType, toMessageData, ...args)
 
 function EventfulEntity(eventMessageType) {
     let aggregate;
-    const handler = async (messageType, messageData) => {
+    const handler = async (messageType) => {
         if (typeof messageType === "function")
             aggregate = messageType;
     };

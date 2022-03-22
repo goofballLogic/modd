@@ -10,11 +10,19 @@ export default function Aggregate(aggregateName, components = []) {
     let processingBacklog = false;
 
     const aggregate = async (...args) => {
+
         if (typeof args[0] === "function") {
-            components.push(args[0]);
+
+            const [component] = args;
+            components.push(component);
+            sendTo(component, aggregate);
+
         } else {
+
             await processNormalMessage(...args);
+
         }
+
     };
 
     aggregate.id = aggregateName;
@@ -24,44 +32,65 @@ export default function Aggregate(aggregateName, components = []) {
     return aggregate;
 
     async function processNormalMessage(messageType, messageData) {
+
         if (messageType !== Logged) {
+
             backlog.push([Logged, {
                 source: aggregateName,
                 message: ["Received", messageType, new Error().stack],
                 level: "trace"
             }]);
+
         }
         backlog.push([messageType, messageData]);
         if (!processingBacklog) {
+
             await processBacklog();
+
         }
+
     }
 
     async function processBacklog() {
+
         processingBacklog = true;
         let iterationCount = 0;
         try {
+
             while (backlog.length) {
+
                 await processBacklogItem();
                 if (++iterationCount > 1000) {
+
                     console.error(backlog);
                     throw new Error(`${aggregateName}: message loop stuck`);
+
                 }
+
             }
+
         } finally {
+
             processingBacklog = false;
+
         }
+
     }
 
     async function processBacklogItem() {
+
         const [messageType, messageData] = backlog.shift();
         if (messageType !== Logged) {
+
             await logSent(messageType);
+
         }
         await send(messageType, messageData);
+
     }
 
     async function logSent(messageType) {
+
         await send(Logged, {
             source: aggregateName,
             message: [
@@ -71,6 +100,7 @@ export default function Aggregate(aggregateName, components = []) {
             ],
             level: messageType === Logged ? "logging" : "trace"
         });
+
     }
 
     async function send(messageType, messageData) {
@@ -84,18 +114,28 @@ export default function Aggregate(aggregateName, components = []) {
 
     }
 
-    async function sendTo(component, messageType, messageData) {
+    async function sendTo(component, ...args) {
 
-        const received = await component(messageType, messageData);
-        if (Array.isArray(received)) {
+        if (args.length === 1) {
 
-            for (const [messageType, messageData] of received) {
+            await component(args[0])
 
-                // invoke async method synchronously to allow event loop to drain
-                aggregate(messageType, messageData);
+        } else {
+
+            const [messageType, messageData] = args;
+            const received = await component(messageType, messageData);
+            if (Array.isArray(received)) {
+
+                for (const [messageType, messageData] of received) {
+
+                    // invoke async method synchronously to allow event loop to drain
+                    aggregate(messageType, messageData);
+                }
+
             }
 
         }
 
     }
+
 }
