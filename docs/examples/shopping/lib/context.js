@@ -2,17 +2,19 @@ import Outbound from "./outbound.js";
 import Filter from "./filter.js";
 
 export default function Context(
-    name,
-    allowedInboundMessages,
-    allowedOutboundMessages,
+    {
+        name,
+        inbound = [],
+        outbound = []
+    },
     insideFactory
 ) {
     return Outbound(
         name,
         outside => {
-            const filteredOutside = Filter(allowedOutboundMessages, outside);
+            const filteredOutside = Filter(outbound, outside);
             const inside = insideFactory(filteredOutside);
-            return Filter(allowedInboundMessages, inside);
+            return Filter(inbound, inside);
         }
     );
 }

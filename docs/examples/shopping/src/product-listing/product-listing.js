@@ -1,50 +1,58 @@
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
-import Aggregate from "../../lib/aggregate.js";
 import { productListBehaviourRequested } from "./product-listing-messages.js";
 import { itemWasAddedToCart } from "../cart/cart-messages.js";
 import { ContextPort } from "../../lib/dom-adapter.js";
 import "./modd-product-listing.js";
-import Filter from "../../lib/filter.js";
 import { Logged } from "../../lib/log.js";
-import Context from "../../lib/context.js";
-import TwoWay from "../../lib/outbound.js";
+import Outbound from "../../lib/outbound.js";
+import Spawn from "../../lib/spawn.js";
+import ContextAggregate from "../../lib/context-aggregate.js";
 
 export default function ProductListing() {
 
-    // given product listing selector and a send function, create and return the context port
-    const productListingPort = elementSelector =>
-        TwoWay(sendToAggregate =>
-            Filter(availableProductsDetermined,
-                ContextPort("product listing context", elementSelector, sendToAggregate)
+    /*
+        When it receives a message that product list behaviour is requested,
+        this entity will spawn a ContextPort entity which exchanges messages
+        with the modd-product-listing element identified in the productListing
+        element selector string.
+    */
+    const productListPortSpawner = Spawn(
+        // message which triggers spawning
+        productListBehaviourRequested,
+        // transform on that message's data
+        x => x.productListing,
+        // factory to build the ContextPort connecting to the element
+        elementSelector =>
+            // it needs the ability to send outbound messages to the contextAggregate
+            Outbound(contextAggregate =>
+
+                ContextPort(
+                    "product-listing-element",
+                    elementSelector,
+                    contextAggregate
+                )
+
             )
-        );
-
-    // given the message containing the product listing selector, build a two way containing the port
-    const spawnProductListingPort = (_, messageData) => productListingPort(messageData.productListing);
-
-    // the aggregate starts out with only an element which will spawn the product listing context port
-    const contextAggregate = outside =>
-        Aggregate(
-            "product listing",
-            [
-                SpawnByMessage(productListBehaviourRequested, spawnProductListingPort),
-                outside
-            ]
-        );
-
-    return Context(
-        "product listing",
-        [productListBehaviourRequested, availableProductsDetermined],
-        [itemWasAddedToCart, Logged],
-        contextAggregate
     );
 
-    function SpawnByMessage(activationMessageTypes, Factory) {
-        return Filter(activationMessageTypes,
-            (...args) => [
-                [Factory(...args)]
+    return ContextAggregate(
+        {
+            name: "product listing",
+            // we want to allow these messages into our context
+            inbound: [
+                productListBehaviourRequested,
+                availableProductsDetermined
+            ],
+            // we want to allow these messages out of our context
+            outbound: [
+                itemWasAddedToCart,
+                Logged
             ]
-        );
-    }
+        },
+        // the list of initial entities (until a entity is spawned)
+        [
+            productListPortSpawner
+        ]
+    );
 
 }

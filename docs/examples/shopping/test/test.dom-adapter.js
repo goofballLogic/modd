@@ -83,8 +83,8 @@ describe("DOM Adapter", () => {
 
                 it("Then the context should have received the sent message", () => {
 
-                    const expected = [message3, "hello from the element"];
-                    expect(contextSideMessagesReceived[3]).to.deep.equal(expected);
+                    const actual = contextSideMessagesReceived[contextSideMessagesReceived.length - 1];
+                    expect(actual).to.deep.equal([message3, "hello from the element"]);
 
                 });
 

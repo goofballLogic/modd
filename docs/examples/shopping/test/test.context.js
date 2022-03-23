@@ -1,6 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
 import Context from "../lib/context.js";
-import { Logged } from "../lib/log.js";
 
 describe("Context", () => {
 
@@ -12,15 +11,17 @@ describe("Context", () => {
 
         // inside the context
         let messagesReceivedByTheInside = [];
-        const theInside = (mt, md) => {
-            messagesReceivedByTheInside.push([mt, md]);
+        const theInside = (...args) => {
+            messagesReceivedByTheInside.push(args);
         };
 
         // create the context
         const context = Context(
-            "the context",
-            [allowedInboundMessage], // allowed inbound messages
-            [allowedOutboundMessage], // allowed outbound messages
+            {
+                name: "the context",
+                inbound: [allowedInboundMessage], // allowed inbound
+                outbound: [allowedOutboundMessage] // allowed outbound
+            },
             outside => { // factory
                 theInside.sendToOutside = outside;
                 return theInside;

@@ -15,7 +15,7 @@ export default function Outbound(...args) {
     let outside = () => { };
 
     // a function to send things to the outside
-    const sendToOutside = (...args) => {
+    const sendToOutside = async (...args) => {
 
         const [messageType, messageData] = args;
         if (typeof messageType !== "function") {
@@ -23,7 +23,7 @@ export default function Outbound(...args) {
             if (isTaintable(messageData))
                 messageData[outboundId] = true;
 
-            outside(...args);
+            await outside(...args);
 
         }
 
