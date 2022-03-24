@@ -26,7 +26,7 @@ class MODDExampleProductListing extends HTMLElement {
     receive(messageType, messageData) {
         if (messageType === availableProductsDetermined) {
             this.#items = messageData;
-            this.render();
+            setTimeout(() => this.render());
         }
     }
 

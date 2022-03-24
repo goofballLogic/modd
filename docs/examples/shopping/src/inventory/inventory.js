@@ -6,7 +6,7 @@ import { availableProductsDetermined } from "./inventory-messages.js";
 
 export default function Inventory() {
 
-    return Outbound(outside => {
+    return Outbound("inventory", outside => {
 
         let inventory = null;
 

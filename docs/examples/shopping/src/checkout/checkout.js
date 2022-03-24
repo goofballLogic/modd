@@ -1,3 +1,3 @@
 export default function () {
-    return async () => { };
+    return async function checkout() { }
 }

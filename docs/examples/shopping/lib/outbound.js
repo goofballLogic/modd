@@ -1,3 +1,5 @@
+import { History } from "./log.js";
+
 let counter = 100;
 
 const isTaintable = x => (typeof x === "object") && x !== null;
@@ -20,8 +22,10 @@ export default function Outbound(...args) {
         const [messageType, messageData] = args;
         if (typeof messageType !== "function") {
 
-            if (isTaintable(messageData))
+            if (isTaintable(messageData)) {
                 messageData[outboundId] = true;
+                messageData[History] = [name].concat(messageData[History] || []);
+            }
 
             await outside(...args);
 
@@ -55,7 +59,7 @@ export default function Outbound(...args) {
         return inside(...args);
 
     };
-    inbound.id = `${name} inbound`;
+    inbound.id = `${name} --Outbound->`;
     return inbound;
 
 }

@@ -16,7 +16,7 @@ const domain = Aggregate("shopping domain", [
     Navigation(),
     Checkout(),
     Outcome(),
-    ConsoleLog()
+    ConsoleLog("debug")
 ]);
 
 domain(
@@ -28,7 +28,7 @@ domain(
 );
 
 function Outcome() {
-    return async (messageType, messageData) => {
+    return async function outcome(messageType, messageData) {
         if (messageType === checkoutWasRequested) {
             const digest = Object
                 .entries(messageData.items)
@@ -50,28 +50,40 @@ function ConsoleLog(minLogLevel = "debug") {
 
     minLogLevel = logLevels[minLogLevel];
 
-    return async (messageType, messageData) => {
+    return async function consoleLog(messageType, messageData) {
         if (messageType === Logged) {
-            const { level, message, source } = messageData;
-            const messageLogLevel = logLevels[level];
-            if (minLogLevel > messageLogLevel) return;
 
-            const firstSymbol = message.find(x => typeof x === "symbol");
-            const messageDescription = firstSymbol ? firstSymbol.description : "info";
-            console.groupCollapsed(level.toUpperCase(), source, ":", messageDescription);
-            for (const x of Array.isArray(message) ? message : [message]) {
-                switch (level) {
-                    case "error":
-                        console.error(x);
-                        break;
-                    case "warn":
-                        console.warn(x);
-                        break;
-                    default:
-                        console.log(x);
+            new Promise(() => {
+                const { level, message, source } = messageData;
+                const messageLogLevel = logLevels[level];
+                if (minLogLevel > messageLogLevel) return;
+
+                const messageDescription = message.map(x => {
+                    try {
+                        if (typeof x === "symbol") return x;
+                        if (typeof x === "object") return "...";
+                        return `${x}`;
+                    } catch (err) {
+                        return "?";
+                    }
+                });
+                console.groupCollapsed(level.toUpperCase(), source, ":", ...messageDescription);
+                for (const x of Array.isArray(message) ? message : [message]) {
+                    switch (level) {
+                        case "error":
+                            console.error(x);
+                            break;
+                        case "warn":
+                            console.warn(x);
+                            break;
+                        default:
+                            console.log(x);
+                    }
                 }
-            }
-            console.groupEnd();
+                console.groupEnd();
+            });
+
         }
+
     };
 }

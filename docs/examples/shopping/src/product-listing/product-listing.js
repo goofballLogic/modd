@@ -13,8 +13,8 @@ export default function ProductListing() {
     /*
         When it receives a message that product list behaviour is requested,
         this entity will spawn a ContextPort entity which exchanges messages
-        with the modd-product-listing element identified in the productListing
-        element selector string.
+        with the web component identified in the productListing element selector
+        string.
     */
     const productListPortSpawner = Spawn(
         // message which triggers spawning
@@ -24,7 +24,7 @@ export default function ProductListing() {
         // factory to build the ContextPort connecting to the element
         elementSelector =>
             // it needs the ability to send outbound messages to the contextAggregate
-            Outbound(contextAggregate =>
+            Outbound("product list context port outbound", contextAggregate =>
 
                 ContextPort(
                     "product-listing-element",
@@ -49,7 +49,7 @@ export default function ProductListing() {
                 Logged
             ]
         },
-        // the list of initial entities (until a entity is spawned)
+        // the list of initial entities exchanging messages (until a entity is spawned)
         [
             productListPortSpawner
         ]

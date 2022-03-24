@@ -4,7 +4,7 @@ import { productListBehaviourRequested } from "../product-listing/product-listin
 
 export default function Navigation() {
 
-    return (messageType, messageData) => {
+    return function navigation(messageType, messageData) {
         if (messageType === shoppingPageRequested) {
             const { cart, productListing } = messageData;
             return [

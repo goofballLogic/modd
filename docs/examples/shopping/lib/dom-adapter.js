@@ -48,7 +48,7 @@ function Port({
         if (messageType !== Logged) {
             log({
                 source: name,
-                message: ["handling", messageType, messageData],
+                message: ["handling", messageType, messageData, e],
                 level: messageType === Logged ? "logging" : "debug"
             });
         }

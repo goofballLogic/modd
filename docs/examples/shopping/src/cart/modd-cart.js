@@ -36,7 +36,7 @@ class MODDExampleCart extends HTMLElement {
             this.#isEnabled = !!messageData?.enabled;
             this.render();
         }
-        if (messageType === itemsInCartStatusUpdated) {
+        if (messageType === cart.viewModelUpdated) {
             const items = Array.from(this.#items);
             for (const [itemId, { title, quantity }] of Object.entries(messageData.items)) {
                 const existing = items.find(x => x.itemId === itemId);
@@ -50,7 +50,7 @@ class MODDExampleCart extends HTMLElement {
                 if (!(item.itemId in messageData.items))
                     this.#items.delete(item);
             }
-            this.render();
+            setTimeout(() => this.render());
         }
     }
 

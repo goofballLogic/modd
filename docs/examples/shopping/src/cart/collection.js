@@ -2,6 +2,15 @@ import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 import { availableProductsDetermined } from "../inventory/inventory-messages.js";
 import { cart, cartUpdated, itemWasAddedToCart, itemsInCartStatusUpdated, itemWasRemovedFromCart, itemQuantityWasChanged } from "./cart-messages.js";
 
+/*
+    This entity has a few responsibiliies.
+    1. Firsly, when it receives a message that available products have been determined,
+        it updates its internal record of what products there are
+    2. Secondly, if an item is added, removed, or its quantity is changed, it keeps a
+        record of the tally of items in the cart
+    3. Finally, when adjustments are made to the items in the cart, it sends out a consolidated
+        update of the needed product details and quantity for the user to interact with
+*/
 export default function Collection() {
 
     const items = new Map();
@@ -63,6 +72,7 @@ export default function Collection() {
     }
 
     function buildMessagesAfterCartUpdated() {
+        return [];
         return [
             buildCartUpdatedMessage(),
             buildItemsInCartStatusUpdated()

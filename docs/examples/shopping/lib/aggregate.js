@@ -1,6 +1,14 @@
-import { Logged } from "./log.js";
+import { Logged, History } from "./log.js";
+
+let logid = 1000;
+
+function isTaintable(x) {
+    return (typeof x === "object") && !!x;
+}
 
 export default function Aggregate(aggregateName, components = []) {
+
+    const aggregateId = Symbol(aggregateName);
 
     components = [...components];
     if (!components.every(x => x))
@@ -25,7 +33,7 @@ export default function Aggregate(aggregateName, components = []) {
 
     };
 
-    aggregate.id = aggregateName;
+    aggregate.id = aggregateId;
 
     send(aggregate);
 
@@ -33,11 +41,14 @@ export default function Aggregate(aggregateName, components = []) {
 
     async function processNormalMessage(messageType, messageData) {
 
+        if (isTaintable(messageData) && aggregateId in messageData)
+            return;
+
         if (messageType !== Logged) {
 
             backlog.push([Logged, {
                 source: aggregateName,
-                message: ["Received", messageType, new Error().stack],
+                message: ["Received", logid++, messageType, "stack:", messageData[History] || []],
                 level: "trace"
             }]);
 
@@ -80,23 +91,30 @@ export default function Aggregate(aggregateName, components = []) {
     async function processBacklogItem() {
 
         const [messageType, messageData] = backlog.shift();
-        if (messageType !== Logged) {
+        messageData[aggregateId] = true;
+        if (messageData && typeof messageData === "object") {
 
-            await logSent(messageType);
+            messageData[History] = [aggregateName].concat(messageData[History] || []);
 
         }
         await send(messageType, messageData);
+        if (messageType !== Logged) {
+
+            await logSent(messageType, messageData[History]);
+
+        }
 
     }
 
-    async function logSent(messageType) {
+    async function logSent(messageType, history = []) {
 
         await send(Logged, {
             source: aggregateName,
             message: [
                 "Sent",
                 messageType,
-                `Remaining backlog size ${backlog.length}`
+                `Remaining backlog size ${backlog.length}`,
+                history
             ],
             level: messageType === Logged ? "logging" : "trace"
         });
@@ -113,6 +131,7 @@ export default function Aggregate(aggregateName, components = []) {
         }
 
     }
+
 
     async function sendTo(component, ...args) {
 
