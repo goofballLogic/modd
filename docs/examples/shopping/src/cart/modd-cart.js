@@ -1,18 +1,17 @@
 import { ensureStylesheet } from "../browser/elements.js";
 import {
     cartBehaviourRequested,
-    itemsInCartStatusUpdated,
-    cart,
     itemWasRemovedFromCart,
-    itemQuantityWasChanged
+    itemQuantityWasChanged,
+    itemsInCartStatusUpdated
 } from "./cart-messages.js";
 import { ElementPort } from "../../lib/dom-adapter.js";
+import { checkoutWasRequested } from "../checkout/checkout-messages.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
 class MODDExampleCart extends HTMLElement {
 
-    #items = new Set();
     #isEnabled = false;
     #collapsed = true;
     #sendMessage;
@@ -20,6 +19,7 @@ class MODDExampleCart extends HTMLElement {
     constructor() {
         super();
         this.attachHandlers();
+        this.classList.add("collapsed");
         this.render();
     }
 
@@ -33,24 +33,11 @@ class MODDExampleCart extends HTMLElement {
 
     receive(messageType, messageData) {
         if (messageType === cartBehaviourRequested) {
-            this.#isEnabled = !!messageData?.enabled;
+            this.#isEnabled = true;
             this.render();
         }
-        if (messageType === cart.viewModelUpdated) {
-            const items = Array.from(this.#items);
-            for (const [itemId, { title, quantity }] of Object.entries(messageData.items)) {
-                const existing = items.find(x => x.itemId === itemId);
-                if (existing) {
-                    existing.quantity = quantity;
-                } else {
-                    this.#items.add({ itemId, quantity, title });
-                }
-            }
-            for (const item of this.#items) {
-                if (!(item.itemId in messageData.items))
-                    this.#items.delete(item);
-            }
-            setTimeout(() => this.render());
+        if (messageType === itemsInCartStatusUpdated) {
+            setTimeout(() => this.render(messageData));
         }
     }
 
@@ -73,37 +60,35 @@ class MODDExampleCart extends HTMLElement {
             }
             if (e.target.classList.contains("checkout")) {
                 e.preventDefault();
-                this.#sendMessage(cart.checkoutRequested);
+                this.#sendMessage(checkoutWasRequested);
             }
         });
         this.addEventListener("click", e => {
             if (e.target.classList.contains("toggler")) {
                 this.#collapsed = !this.#collapsed;
-                this.render();
+                if (this.#collapsed) {
+                    this.classList.add("collapsed");
+                } else {
+                    this.classList.remove("collapsed");
+                }
             }
         })
     }
 
-    render() {
+    render(viewModel) {
 
-        if (this.#collapsed && !this.classList.contains("collapsed")) {
-            this.classList.add("collapsed");
-        }
-        if (!this.#collapsed && this.classList.contains("collapsed")) {
-            this.classList.remove("collapsed");
-        }
-        const hasItems = !!this.#items.size
+        const items = viewModel?.items || [];
+        const hasItems = !!items.length;
         const canCheckout = hasItems && this.#isEnabled;
         this.innerHTML = `
-            <header class="toggler">Cart <span class="total-count">${countItems(this.#items)}</span></header>
-            ${hasItems ? renderItems(this.#items) : renderEmpty()}
+            <header class="toggler">
+                Cart
+                <span class="total-count">${items.length}</span>
+            </header>
+            ${hasItems ? renderItems(items) : renderEmpty()}
             ${checkoutForm(canCheckout)}
         `;
     }
-}
-
-function countItems(items) {
-    return Array.from(items).reduce((sum, i) => sum + i.quantity, 0);
 }
 
 function renderEmpty() {
@@ -113,7 +98,6 @@ function renderEmpty() {
 }
 
 function renderItems(items) {
-    items = Array.from(items);
     return `
         <ul>${items.map(renderItem).join("")}</ul>
     `;

@@ -10,17 +10,19 @@ export default function Spawn(activatingMessageTypes, options, Factory) {
 
     return Filter(
         activatingMessageTypes,
-        (_, messageData) => {
+        async (messageType, messageData) => {
 
             const parsedData = dataParser(messageData);
             const spawned = Factory(parsedData);
+            const returned = await spawned(messageType, messageData);
             return [
                 [Logged, {
                     source: name,
                     message: ["Spawned", spawned.id || `${Factory.name} entity`],
                     level: "debug"
                 }],
-                [spawned]
+                [spawned],
+                ...returned || []
             ]
 
         }

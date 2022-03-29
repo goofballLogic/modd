@@ -53,7 +53,7 @@ class MODDExampleProductListing extends HTMLElement {
 function renderItem(item) {
     const canBuy = item.stockLevel > 0;
     return `<li>
-        <img class="thumbnail" src="${item.imageUrl}" />
+        <img class="thumbnail" alt="book cover" src="${item.imageUrl}" />
         <span class="title">${item.title}</span>
         <span class="author">${item.author}</span>
 

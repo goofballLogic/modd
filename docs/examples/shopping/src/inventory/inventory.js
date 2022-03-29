@@ -33,7 +33,7 @@ export default function Inventory() {
                     const cartCount = items[inventoryId];
                     outside(Logged, {
                         source: "Inventory",
-                        message: [`Decreased ${inventoryItem.listingId} by ${cartCount}`],
+                        message: [`${inventoryItem.listingId} drawn down by ${cartCount}`],
                         level: "debug"
                     });
                     inventoryItem.stockLevel = Math.max(

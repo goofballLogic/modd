@@ -48,7 +48,7 @@ export default function Aggregate(aggregateName, components = []) {
 
             backlog.push([Logged, {
                 source: aggregateName,
-                message: ["Received", logid++, messageType, "stack:", messageData[History] || []],
+                message: ["Received", logid++, messageType, "stack:", (messageData && messageData[History]) || []],
                 level: "trace"
             }]);
 
@@ -91,16 +91,16 @@ export default function Aggregate(aggregateName, components = []) {
     async function processBacklogItem() {
 
         const [messageType, messageData] = backlog.shift();
-        messageData[aggregateId] = true;
         if (messageData && typeof messageData === "object") {
 
+            messageData[aggregateId] = true;
             messageData[History] = [aggregateName].concat(messageData[History] || []);
 
         }
         await send(messageType, messageData);
         if (messageType !== Logged) {
 
-            await logSent(messageType, messageData[History]);
+            await logSent(messageType, messageData && messageData[History]);
 
         }
 
