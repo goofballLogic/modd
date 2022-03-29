@@ -1,8 +1,8 @@
-import { availableProductsDetermined } from "../inventory/inventory-messages.js";
-import { cartUpdated, itemsInCartStatusUpdated } from "./cart-messages.js";
-import Merge from "../../lib/merge.js";
+import { availableProductsDetermined } from "./messages/inventory.js";
+import { cartUpdated, itemsInCartStatusUpdated } from "./messages/cart.js";
+import Merge from "../lib/merge.js";
 
-export default function ViewModeller() {
+export default function CartViewModeller() {
 
     function buildViewModel(cache) {
 

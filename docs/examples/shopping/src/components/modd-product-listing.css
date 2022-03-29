@@ -14,6 +14,7 @@ modd-product-listing ul li {
     box-shadow: 0 0 1px 0 silver;
     grid-template-columns: 100pt 1fr;
     min-height: 120pt;
+    background-color: white;
 }
 
 modd-product-listing li>* {

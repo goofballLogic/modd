@@ -1,5 +1,5 @@
-import Filter from "../../lib/filter.js";
-import { cartUpdated, itemQuantityWasChanged, itemWasAddedToCart, itemWasRemovedFromCart } from "./cart-messages.js";
+import Filter from "../lib/filter.js";
+import { cartUpdated, itemQuantityWasChanged, itemWasAddedToCart, itemWasRemovedFromCart } from "./messages/cart.js";
 
 const clone = x => JSON.parse(JSON.stringify(x));
 
@@ -12,7 +12,7 @@ export default function CartContent() {
         handleMessages
     );
 
-    function handleMessages(messageData, messageType) {
+    function handleMessages(messageType, messageData) {
         const { itemId, quantity } = messageData;
         switch (messageType) {
             case itemWasAddedToCart:

@@ -1,9 +1,9 @@
 modd-cart {
-    flex: 1;
-    box-shadow: 0 0 1px 0 silver;
+    box-shadow: 0 0 2px 0 white;
     position: sticky;
-    top: 10pt;
+    top: 0;
     background-color: white;
+    overflow: hidden;
 }
 
 modd-cart ul {

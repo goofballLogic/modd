@@ -4,18 +4,30 @@
 
 body {
     min-height: 100vh;
-    font-family: sans-serif;
+
+    font-family: Arial, Helvetica, sans-serif;
     font-weight: 100;
     --title-text-size: 1.2em;
     line-height: 1.5;
     margin: 0;
     padding: 20pt;
     box-sizing: border-box;
+
+    background: linear-gradient(#ffffff 50%, rgba(255, 255, 255, 0) 0) 0 0,
+        radial-gradient(circle closest-side, #FFFFFF 53%, rgba(255, 255, 255, 0) 0) 0 0,
+        radial-gradient(circle closest-side, #FFFFFF 50%, rgba(255, 255, 255, 0) 0) 55px 0 #48B;
+    background-size: 110px 400px;
+    background-repeat: repeat-x;
+    background-attachment: fixed;
 }
 
 h1 {
     margin-top: 0;
+    color: #48B;
+    margin-bottom: 0;
 }
+
+
 
 button {
     padding: 5pt 20pt;
@@ -27,4 +39,17 @@ main {
     display: flex;
     flex-direction: column;
     gap: 10pt;
+    background-color: #FFFFFFEE;
+
+}
+
+@media screen and (min-width: 600px) {
+
+    main {
+        padding: 30pt;
+    }
+
+    h1 {
+        font-size: 40px;
+    }
 }

@@ -1,6 +1,5 @@
-import "./modd-cart.js";
-import { cartBehaviourRequested, itemsInCartStatusUpdated } from "./cart-messages.js";
-import { SpawnContextPort } from "../../lib/spawn-context-port.js";
+import { cartBehaviourRequested, itemsInCartStatusUpdated } from "./messages/cart.js";
+import { SpawnContextPort } from "../lib/spawn-context-port.js";
 
 export default function CartElementPortSpawner() {
 

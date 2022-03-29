@@ -1,7 +1,5 @@
 import { Logged } from "./log.js";
 
-const asArray = x => Array.isArray(x) ? x : x === undefined ? [] : [x];
-
 export default function Filter(...args) {
 
     const name = typeof args[0] === "string" ? args.shift() : "Filter entity";
@@ -9,7 +7,7 @@ export default function Filter(...args) {
 
     messages = Array.isArray(messages) ? messages : [messages];
 
-    return async (messageType, messageData) => {
+    return async (messageType, ...args) => {
         if (messages.includes(messageType)) {
             const result = [];
 
@@ -27,7 +25,7 @@ export default function Filter(...args) {
 
             }
 
-            const output = await recipient(messageType, messageData);
+            const output = await recipient(messageType, ...args);
             if (output) {
                 result.push(...output);
             }

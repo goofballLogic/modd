@@ -1,10 +1,10 @@
-import { cartBehaviourRequested, cartUpdated, itemWasAddedToCart } from "./cart-messages.js";
-import { availableProductsDetermined } from "../inventory/inventory-messages.js";
-import { checkoutWasRequested } from "../checkout/checkout-messages.js";
-import { Logged } from "../../lib/log.js";
-import ContextAggregate from "../../lib/context-aggregate.js";
+import { cartBehaviourRequested, cartUpdated, itemWasAddedToCart } from "./messages/cart.js";
+import { availableProductsDetermined } from "./messages/inventory.js";
+import { checkoutWasRequested } from "./messages/checkout.js";
+import { Logged } from "../lib/log.js";
+import ContextAggregate from "../lib/context-aggregate.js";
 import CartContent from "./cart-content.js";
-import ViewModeller from "./view-modeller.js";
+import CartViewModeller from "./cart-view-modeller.js";
 import CartElementPortSpawner from "./cart-element-port-spawner.js";
 
 export default function Cart() {
@@ -25,7 +25,7 @@ export default function Cart() {
         },
         [
             CartContent(),
-            ViewModeller(),
+            CartViewModeller(),
             CartElementPortSpawner()
         ]
     );
