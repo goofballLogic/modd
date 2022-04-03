@@ -142,13 +142,19 @@ export default function Aggregate(aggregateName, components = []) {
         } else {
 
             const [messageType, messageData] = args;
-            const received = await component(messageType, messageData);
-            if (Array.isArray(received)) {
+            const results = await component(messageType, messageData);
+            if (Array.isArray(results)) {
 
-                for (const [messageType, messageData] of received) {
+                for (const result of results) {
 
-                    // invoke async method synchronously to allow event loop to drain
-                    aggregate(messageType, messageData);
+                    if (Array.isArray(result)) {
+
+                        const [messageType, messageData] = result;
+                        // invoke async method synchronously to allow event loop to drain
+                        aggregate(messageType, messageData);
+
+                    }
+
                 }
 
             }

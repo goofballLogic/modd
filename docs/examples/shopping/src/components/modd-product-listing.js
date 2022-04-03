@@ -6,7 +6,6 @@ import { availableProductsDetermined } from "../messages/inventory.js";
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
 class MODDExampleProductListing extends HTMLElement {
-    #items = [];
     #sendMessage;
 
     constructor() {
@@ -25,8 +24,7 @@ class MODDExampleProductListing extends HTMLElement {
 
     receive(messageType, messageData) {
         if (messageType === availableProductsDetermined) {
-            this.#items = messageData;
-            setTimeout(() => this.render());
+            setTimeout(() => this.render(messageData));
         }
     }
 
@@ -38,8 +36,7 @@ class MODDExampleProductListing extends HTMLElement {
         });
     }
 
-    render() {
-        const items = this.#items;
+    render(items = []) {
         if (!items.length) {
             this.innerHTML = "items loading";
         } else {

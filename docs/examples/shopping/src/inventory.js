@@ -1,66 +1,43 @@
 import { Logged } from "../lib/log.js";
+import FetchResource from "../lib/fetch-resource.js";
 import { cartUpdated } from "./messages/cart.js";
 import { productListBehaviourRequested } from "./messages/product-listing.js";
-import { availableProductsDetermined } from "./messages/inventory.js";
+import { mergeAvailableProductsAndCartUpdated, availableProductsDetermined } from "./messages/inventory.js";
+import ContextAggregate from "../lib/context-aggregate.js";
+import Merge from "../lib/merge.js";
 
-const clone = x => JSON.parse(JSON.stringify(x));
-
-export default function Inventory() {
-
-    let inventory = null;
-
-    return async (messageType, messageData) => {
-        if (messageType === productListBehaviourRequested) {
-            const inventory = await readInventory();
-            return [[availableProductsDetermined, clone(inventory)]];
-        }
-        if (messageType === cartUpdated) {
-            const logged = [];
-            const availableInventory = await adaptInventory(messageData, logged.push.bind(logged));
-            return [
-                [availableProductsDetermined, clone(availableInventory)],
-                ...logged.map(x => [Logged, x])
-            ];
-        }
-    };
-
-    async function adaptInventory({ items }, log) {
-
-        const availableInventory = await readInventory();
-        for (const inventoryItem of availableInventory) {
-            const inventoryId = inventoryItem.listingId;
-            if (inventoryId in items) {
-                const cartCount = items[inventoryId];
-                log({
-                    source: "Inventory",
-                    message: [`${inventoryItem.listingId} drawn down by ${cartCount}`],
-                    level: "debug"
-                });
-                inventoryItem.stockLevel = Math.max(
-                    0,
-                    inventoryItem.stockLevel - cartCount
-                );
-            }
-        }
-        return availableInventory;
-    }
-
-    async function readInventory() {
-        if (!inventory) {
-            const data = await fetchInventoryData();
-            inventory = data.items;
-        }
-        return clone(inventory);
-    }
-
-}
-
-async function fetchInventoryData() {
+const inventoryRoute = (function () {
     const parts = import.meta.url.split("/");
     parts.pop();
     parts.push("inventory-fake-catalog.json");
-    const url = new URL(parts.join("/"));
-    const resp = await fetch(url);
-    const data = await resp.json();
-    return data;
-}
+    return new URL(parts.join("/"));
+}());
+
+export default () =>
+    ContextAggregate({
+        name: "inventory",
+        inbound: [
+            productListBehaviourRequested,
+            cartUpdated
+        ],
+        outbound: [
+            availableProductsDetermined,
+            Logged
+        ]
+    }, [
+        FetchResource({
+            name: "fetch inventory",
+            fetchMessageType: productListBehaviourRequested,
+            urlBuilder: () => inventoryRoute,
+            outputMessageType: availableProductsDetermined,
+            outputMessageTransform: x => x.items
+        }),
+        Merge({
+            name: "adapt inventory",
+            accumulators: [availableProductsDetermined, cartUpdated],
+            output: cache => mergeAvailableProductsAndCartUpdated(
+                cache[availableProductsDetermined] || [],
+                cache[cartUpdated]?.items || {}
+            )
+        })
+    ]);

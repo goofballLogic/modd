@@ -5,9 +5,8 @@ import { Logged } from "../lib/log.js";
 import ContextAggregate from "../lib/context-aggregate.js";
 import ProductListElementPortSpawner from "./product-listing-element-port-spawner.js";
 
-export default function ProductListing() {
-
-    return ContextAggregate(
+export default () =>
+    ContextAggregate(
         {
             name: "product listing",
             inbound: [
@@ -23,5 +22,3 @@ export default function ProductListing() {
             ProductListElementPortSpawner()
         ]
     );
-
-}

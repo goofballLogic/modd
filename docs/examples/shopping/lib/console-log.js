@@ -1,4 +1,4 @@
-import { Logged } from "../lib/log.js";
+import { Logged } from "./log.js";
 
 export default function ConsoleLog(minLogLevel = "debug") {
 
@@ -33,17 +33,10 @@ export default function ConsoleLog(minLogLevel = "debug") {
                     }
                 });
                 console.groupCollapsed(level.toUpperCase(), source, ":", ...messageDescription);
+                if (level === "error") console.error("ERROR");
+                if (level === "warn") console.warn("WARN");
                 for (const x of Array.isArray(message) ? message : [message]) {
-                    switch (level) {
-                        case "error":
-                            console.error(x);
-                            break;
-                        case "warn":
-                            console.warn(x);
-                            break;
-                        default:
-                            console.log(x);
-                    }
+                    console.log(x);
                 }
                 console.groupEnd();
             });

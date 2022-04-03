@@ -5,7 +5,7 @@ import Navigation from "./navigation.js";
 import Checkout from "./checkout.js";
 import Aggregate from "../lib/aggregate.js";
 import { shoppingPageRequested } from "./messages/navigation.js";
-import ConsoleLog from "./console-log.js";
+import ConsoleLog from "../lib/console-log.js";
 
 const domain = Aggregate("shopping domain", [
     Cart(),
