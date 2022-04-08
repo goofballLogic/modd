@@ -1,12 +1,12 @@
-import { ensureStylesheet } from "../../lib/elements.js";
+import { ensureStylesheet } from "../../entities/elements.js";
+import { ElementPort } from "../../entities/dom-adapter.js";
 import {
     cartBehaviourRequested,
     itemWasRemovedFromCart,
     itemQuantityWasChanged,
     itemsInCartStatusUpdated
-} from "../messages/cart.js";
-import { ElementPort } from "../../lib/dom-adapter.js";
-import { checkoutWasRequested } from "../messages/checkout.js";
+} from "../../messages/cart.js";
+import { checkoutWasRequested } from "../../messages/checkout.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 

@@ -1,7 +1,7 @@
-import { ensureStylesheet } from "../../lib/elements.js";
-import { itemWasAddedToCart } from "../messages/cart.js";
-import { ElementPort } from "../../lib/dom-adapter.js";
-import { availableProductsDetermined } from "../messages/inventory.js";
+import { ensureStylesheet } from "../../entities/elements.js";
+import { itemWasAddedToCart } from "../../messages/cart.js";
+import { ElementPort } from "../../entities/dom-adapter.js";
+import { availableProductsDetermined } from "../../messages/inventory.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
 
