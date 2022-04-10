@@ -1,19 +1,23 @@
 import { log, Logged } from "./log.js";
 import { asArray } from "../maps/arrays.js";
 
+let count = 1;
 export default function Filter(...args) {
 
     // TODO: remove older (type 2) parameterisation
     let name, messages, blacklist, recipient, blacklistEntities;
 
-    if (typeof args[0] === "object") {
+    if (typeof args[0] === "object" && !Array.isArray(args[0])) {
         ({ name, messages, blacklist, blacklistEntities } = args[0]);
         recipient = args[1];
     } else if (typeof args[0] === "string") {
         name = typeof args[0] === "string" ? args.shift() : "Filter entity";
         [messages, recipient] = args;
+    } else {
+        [messages, recipient] = args;
     }
 
+    name = name || `Filter ${count++}`;
     messages = asArray(messages);
 
     const filterByMessageType = blacklist
@@ -43,18 +47,15 @@ export default function Filter(...args) {
 
     function logAllow(messageType) {
 
-        const result = [];
+        // don't log anything if we're handling a log message
+        if (messageType === Logged)
+            return [];
 
         // log that we are allowing it (unless it's a log message we're allowing)
-        if (messageType !== Logged) {
-
-            const message = ["Allowing", messageType];
-            if (recipient?.id)
-                message.push("to", recipient?.id);
-            result.push(log("trace", name, message));
-
-        }
-        return result;
+        const message = ["Allowing", messageType];
+        if (recipient?.id)
+            message.push("to", recipient?.id);
+        return [log("trace", name, ...message)];
 
     }
 

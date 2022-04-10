@@ -49,15 +49,16 @@ describe("Filter", () => {
 
                 it("Then the allowed messages should be logged", () => {
 
-                    expect(received).to.have.lengthOf(2);
-                    expect(received[0]).deep.equal([
-                        Logged,
-                        {
-                            level: "trace",
-                            message: ["Allowing", applesPurchased],
-                            source: "Filter entity"
-                        }
-                    ]);
+                    const logged = received
+                        .filter(([messageType]) => messageType === Logged)
+                        .map(([_, messageData]) => messageData);
+
+                    expect(logged).to.have.lengthOf(2);
+                    expect(logged[0]).deep.equal({
+                        level: "trace",
+                        message: ["Allowing", applesPurchased],
+                        source: "Filter 2"
+                    });
 
                 });
 
