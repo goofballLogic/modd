@@ -1,7 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Filter from "../lib/filter.js";
-import { Logged } from "../lib/log.js";
-import Merge from "../lib/merge.js";
+import Merge from "../src/entities/merge.js";
 
 describe("Merge", () => {
 

@@ -1,4 +1,4 @@
-import { ElementPort } from "../lib/dom-adapter.js";
+import { ElementPort } from "../src/entities/dom-adapter.js";
 
 class MODDTestsExampleElement extends HTMLElement {
 

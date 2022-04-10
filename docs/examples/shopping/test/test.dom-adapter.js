@@ -1,6 +1,6 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import { ContextPort } from "../lib/dom-adapter.js";
-import { Logged } from "../lib/log.js";
+import { ContextPort } from "../src/entities/dom-adapter.js";
+import { Logged } from "../src/entities/log.js";
 import "./MODDTestsExampleElement.js";
 
 describe("DOM Adapter", () => {

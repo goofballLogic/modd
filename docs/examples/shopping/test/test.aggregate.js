@@ -1,5 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Aggregate from "../lib/aggregate.js";
+import Aggregate from "../src/entities/aggregate.js";
 
 describe("Aggregate", () => {
 
@@ -25,10 +25,8 @@ describe("Aggregate", () => {
             });
 
             it("Then the entity receives the message", () => {
-                expect(testEntity.calls.length).to.equal(4);
-
-                const [actualMessageType, actualMessageData] = testEntity.calls[3];
-                expect(actualMessageType).to.equal(testMessage);
+                const [_mt, actualMessageData]
+                    = testEntity.calls.find(([mt]) => mt === testMessage);
                 expect(actualMessageData).to.equal("hello");
             });
 
@@ -60,8 +58,8 @@ describe("Aggregate", () => {
             });
 
             it("Then the entity receives Message B also", () => {
-                const [actualMessageType, actualMessageData] = testEntity.calls[testEntity.calls.length - 1];
-                expect(actualMessageType).to.equal(messageB);
+                const [_, actualMessageData] =
+                    testEntity.calls.find(([mt]) => mt === messageB);
                 expect(actualMessageData).to.equal("b data");
             });
 
@@ -86,16 +84,19 @@ describe("Aggregate", () => {
         describe("When an event gets triggered", () => {
 
             beforeEach(async () => {
+
                 await eventfulEntity.triggerEvent("It's Christmas");
+
             });
 
             it("Then other entities in the same aggregate should be notified", () => {
-                expect(normalEntity.calls.length).to.equal(4);
 
-                const [messageType, messageData] = normalEntity.calls[3];
-                expect(messageType).to.equal(eventMessageType);
-                expect(messageData).to.equal("It's Christmas");
+                const [_, actualMessageData] =
+                    normalEntity.calls.find(([mt]) => mt === eventMessageType);
+                expect(actualMessageData).to.equal("It's Christmas");
+
             });
+
         })
 
     });
@@ -132,8 +133,80 @@ describe("Aggregate", () => {
 
                 it("Then the child entity receives the message", () => {
 
-                    const message = received[received.length - 1];
-                    expect(message).to.deep.equal([helloWorld, "hi!"]);
+                    const actualMessage = received.find(([mt]) => mt === helloWorld);
+                    expect(actualMessage).to.deep.equal([helloWorld, "hi!"]);
+
+                });
+
+            });
+
+        });
+
+        describe("And it receives spawning entity which creates new entities", () => {
+
+            const spawnMessage = Symbol("Spawn some entities please");
+
+            let spawnedEntities;
+
+            function spawner(messageType, messageData) {
+
+                if (messageType === spawnMessage) {
+
+                    const returnMessages = [];
+                    for (let i = 0; i < messageData; i++) {
+
+                        const spy = entitySpy();
+                        spawnedEntities.push(spy);
+                        returnMessages.push([spy]);
+
+                    }
+                    return returnMessages;
+
+                }
+
+            }
+
+            beforeEach(async () => {
+
+                await testAggregate(spawner);
+
+            });
+
+            describe("When the aggregate receives the spawn message", () => {
+
+                beforeEach(async () => {
+
+                    spawnedEntities = [];
+                    await testAggregate(spawnMessage, 3);
+
+                });
+
+                it("Then it should have spawned the requested number of entities", () => {
+
+                    expect(spawnedEntities).to.have.length(3);
+
+                });
+
+                describe("And when the entity receives some message", () => {
+
+                    const someMessage = Symbol("Some message");
+                    beforeEach(async () => {
+
+                        await testAggregate(someMessage, "hello");
+
+                    });
+
+                    it("Then the spawned entities should all receive it", () => {
+
+                        const findTheExpectedMessage = entity => entity.calls.find(([mt]) => mt === someMessage);
+                        const actual = spawnedEntities.map(findTheExpectedMessage);
+                        expect(actual).to.deep.equal([
+                            [someMessage, "hello"],
+                            [someMessage, "hello"],
+                            [someMessage, "hello"],
+                        ]);
+
+                    });
 
                 });
 

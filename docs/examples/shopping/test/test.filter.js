@@ -1,6 +1,6 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Filter from "../lib/filter.js";
-import { Logged } from "../lib/log.js";
+import Filter from "../src/entities/filter.js";
+import { Logged } from "../src/entities/log.js";
 
 describe("Filter", () => {
 
@@ -16,8 +16,12 @@ describe("Filter", () => {
 
             const applesPurchased = Symbol("Apples purchased");
             const orangesPurchased = Symbol("Oranges purchased");
+            let entityFilter;
+            beforeEach(() => {
 
-            const entityFilter = Filter(applesPurchased, entity);
+                entityFilter = Filter(applesPurchased, entity);
+
+            });
 
             describe("When the filter receives messages of multiple types", () => {
 
@@ -65,7 +69,13 @@ describe("Filter", () => {
 
             const applesPurchased = Symbol("Apples purchased");
             const orangesPurchased = Symbol("Oranges purchased");
-            const entityFilter = Filter("applesPurchased -> entity", applesPurchased, entity);
+            let entityFilter;
+
+            beforeEach(() => {
+
+                entityFilter = Filter("applesPurchased -> entity", applesPurchased, entity);
+
+            });
 
             describe("When the filter receives messages of multiple types", () => {
 
@@ -97,10 +107,14 @@ describe("Filter", () => {
             const orangesPurchased = Symbol("Oranges purchased");
             const bananasPurchased = Symbol("Bananas purchased");
 
-            const entityFilter = Filter([applesPurchased, bananasPurchased], entity);
+            let entityFilter;
+            beforeEach(() => {
+
+                entityFilter = Filter([applesPurchased, bananasPurchased], entity);
+
+            });
 
             describe("When the filter receives multiple messages", () => {
-
 
                 beforeEach(() => {
                     entityFilter(applesPurchased, 1);

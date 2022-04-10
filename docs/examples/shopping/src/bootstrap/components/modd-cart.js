@@ -1,5 +1,6 @@
 import { ensureStylesheet } from "../../entities/elements.js";
 import { ElementPort } from "../../entities/dom-adapter.js";
+import Aggregate from "../../entities/aggregate.js";
 import {
     cartBehaviourRequested,
     itemWasRemovedFromCart,
@@ -7,8 +8,61 @@ import {
     itemsInCartStatusUpdated
 } from "../../messages/cart.js";
 import { checkoutWasRequested } from "../../messages/checkout.js";
+import { ElementReaction } from "../../entities/dom-element-reaction.js";
+import { SwitchableElementReaction } from "../../entities/dom-switchable-element-reaction.js";
+import Filter from "../../entities/filter.js";
 
 ensureStylesheet(import.meta.url.replace(/\.js/, ".css"));
+
+const renderMessage = Symbol("Cart: render");
+
+const Header = ElementReaction(
+    {
+        name: "cart-header",
+        calculateHash: (_, data) => (data?.items?.length || 0),
+        mutate: (_, data, header) => {
+            const count = data?.items?.length || 0;
+            header.querySelector(".total-count").innerHTML = count;
+        }
+    },
+    `<header class="toggler">Cart <span class="total-count">0</span></header>`
+);
+
+const Checkout = ElementReaction(
+    {
+        name: "cart-checkout",
+        calculateHash: (_, data) => !!(data?.canCheckout),
+        mutate: (_, data, form) => {
+            form.querySelector("button").disabled = !(data?.canCheckout)
+        }
+    },
+    `<form class="checkout"><button disabled>Check out</button>`
+);
+
+const Items = (() => {
+
+    return SwitchableElementReaction(
+        {
+            name: "cart-items",
+            selectElement: (_, messageData, emptyElement, populatedElement) =>
+                messageData?.items?.length ? populatedElement : emptyElement,
+            calculateHash: (_, messageData) => JSON.stringify([
+                !!(messageData?.items?.length),
+                (messageData?.items || []).map(x => x.quantity).join(",")
+            ]),
+            mutate: (_, messageData, selectedElement) => {
+                if (messageData?.items?.length)
+                    selectedElement.innerHTML =
+                        messageData.items.map(renderItem).join("");
+            }
+        },
+        `
+            <span class="empty-message" > Nothing in cart</span>
+            <ul></ul>
+        `
+    );
+
+})();
 
 class MODDExampleCart extends HTMLElement {
 
@@ -75,32 +129,103 @@ class MODDExampleCart extends HTMLElement {
         })
     }
 
-    render(viewModel) {
+    #renderer = renderer(this);
 
+    async render(viewModel) {
         const items = viewModel?.items || [];
         const hasItems = !!items.length;
         const canCheckout = hasItems && this.#isEnabled;
-        this.innerHTML = `
-            <header class="toggler">
-                Cart
-                <span class="total-count">${items.length}</span>
-            </header>
-            ${hasItems ? renderItems(items) : renderEmpty()}
-            ${checkoutForm(canCheckout)}
-        `;
+        this.#renderer({ items, hasItems, canCheckout });
     }
 }
 
-function renderEmpty() {
-    return `
-        <span class="empty-message">Nothing in cart</span>
-    `;
+let domListCount = 1;
+function DOMList(
+    {
+        name,
+        container,
+        allowedMessages,
+        selectEntries,
+        childFactory
+    } = {}
+) {
+    name = name || `DOMList ${domListCount++} `;
+    return Aggregate(
+        name,
+        [
+            Filter(
+                allowedMessages,
+                function X() {
+
+                    const elementsWhichExist = [];
+                    return async (messageType, messageData) => {
+
+                        const output = [];
+                        const entries = await selectEntries(messageType, messageData);
+                        if (entries && entries.length) {
+
+                            const entryIds = entries.map(([id]) => id);
+                            console.log(entries, entryIds);
+                            // which entries are missing?
+                            const missingIds = entryIds.filter(id => !elementsWhichExist.includes(id));
+                            console.log("Missing:", missingIds);
+                            // create missing ones
+                            for (const id of missingIds) {
+
+                                const newChild = childFactory({ container, id });
+                                await newChild(messageType, messageData);
+                                output.push([newChild]);
+                                elementsWhichExist.push(id);
+
+                            }
+
+                        }
+                        return output;
+
+                    }
+
+                }()
+            ),
+            console.warn.bind(console, name)
+        ]
+    );
+
 }
 
-function renderItems(items) {
-    return `
-        <ul>${items.map(renderItem).join("")}</ul>
-    `;
+function DOMListItem({
+    name,
+    container,
+    id
+}, html) {
+
+    return async (messageType, messageData) => {
+
+        console.error(name, id, messageType, messageData);
+
+    };
+
+}
+
+function renderer(container) {
+
+    const header = Header(container);
+    const items = Items(container);
+    const checkout = Checkout(container);
+
+    const items2 = DOMList({
+        name: "cart-items (2)",
+        allowedMessages: renderMessage,
+        container,
+        selectEntries: (_, data) => (data?.items || []).map(x => [x.itemId, x]),
+        childFactory: DOMListItem({ container }, "<div>hello</div>")
+    });
+    return async messageData => await Promise.allSettled([
+        header(null, messageData),
+        items(null, messageData),
+        checkout(null, messageData),
+        items2(renderMessage, messageData)
+    ]);
+
 }
 
 function renderItem(item) {
@@ -117,16 +242,9 @@ function renderItem(item) {
                     less
                 </button>
             </form>
-        </li>
+        </li >
     `;
 }
 
-function checkoutForm(canCheckout) {
-    return `
-        <form class="checkout">
-            <button ${canCheckout ? "" : "disabled"}>Check out</button>
-        </form>
-    `;
-}
 
 customElements.define("modd-cart", MODDExampleCart);

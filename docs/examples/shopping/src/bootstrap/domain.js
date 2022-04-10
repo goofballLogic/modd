@@ -13,5 +13,5 @@ export default () =>
         Inventory(),
         Navigation(),
         Checkout(),
-        ConsoleLog("trace")
+        ConsoleLog("debug")
     ]);

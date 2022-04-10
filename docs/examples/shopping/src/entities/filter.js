@@ -1,32 +1,45 @@
 import { log, Logged } from "./log.js";
-
-const asArray = x => Array.isArray(x) ? x : x ? [x] : [];
+import { asArray } from "../maps/arrays.js";
 
 export default function Filter(...args) {
 
-    const name = typeof args[0] === "string" ? args.shift() : "Filter entity";
-    let [messages, recipient] = args;
+    // TODO: remove older (type 2) parameterisation
+    let name, messages, blacklist, recipient, blacklistEntities;
 
-    messages = Array.isArray(messages) ? messages : [messages];
+    if (typeof args[0] === "object") {
+        ({ name, messages, blacklist, blacklistEntities } = args[0]);
+        recipient = args[1];
+    } else if (typeof args[0] === "string") {
+        name = typeof args[0] === "string" ? args.shift() : "Filter entity";
+        [messages, recipient] = args;
+    }
 
-    return async (messageType, ...args) => {
+    messages = asArray(messages);
 
-        if (messages.includes(messageType)) {
+    const filterByMessageType = blacklist
+        ? mt => !messages.includes(mt)
+        : mt => messages.includes(mt);
 
+    const messageAllowed = blacklistEntities
+        ? mt => ("function" !== typeof mt) && filterByMessageType(mt)
+        : filterByMessageType
+
+    const filter = async (messageType, ...args) => {
+        if (messageAllowed(messageType))
             return await allow(messageType, args);
 
-        }
-
     };
+    filter.id = name;
+    return filter;
 
     async function allow(messageType, args) {
 
-        return logAllow(messageType).concat(
-            asArray(await recipient(messageType, ...args))
-        );
+        return [
+            ...logAllow(messageType),
+            ...asArray(await recipient(messageType, ...args))
+        ];
+
     }
-
-
 
     function logAllow(messageType) {
 

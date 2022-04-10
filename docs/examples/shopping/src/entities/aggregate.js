@@ -23,6 +23,9 @@ export default function Aggregate(aggregateName, components = []) {
 
             const [component] = args;
             components.push(component);
+            if (component === aggregate) {
+                throw new Error(`${aggregateId} passed to itself`);
+            }
             sendTo(component, aggregate);
 
         } else {

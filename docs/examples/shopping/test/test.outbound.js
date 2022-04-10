@@ -1,5 +1,5 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import Outbound from "../lib/outbound.js";
+import Outbound from "../src/entities/outbound.js";
 
 describe("Outbound", () => {
 
@@ -51,7 +51,6 @@ describe("Outbound", () => {
 
             describe("And messages are collected for a period", () => {
 
-
                 beforeEach(async () => {
                     await beater(heartbeatRequested);
                     try {
@@ -78,9 +77,10 @@ describe("Outbound", () => {
     describe("Given an entity using a named outbound", () => {
 
         let received;
-        const entity = Outbound("the entity", _send => (...args) => received.push(args));
+        let entity;
         beforeEach(() => {
 
+            entity = Outbound("the entity", _send => (...args) => received.push(args));
             received = [];
 
         });
@@ -107,14 +107,14 @@ describe("Outbound", () => {
 
     describe("Given an entity using outbound", () => {
 
-        let received;
-        let triggerSend;
-        const entity = Outbound(send => {
-            triggerSend = send;
-            return (...args) => { received.push(args); };
-        });
+        let received, triggerSend, entity;
+
         beforeEach(() => {
 
+            entity = Outbound(send => {
+                triggerSend = send;
+                return (...args) => { received.push(args); };
+            })
             received = [];
 
         });

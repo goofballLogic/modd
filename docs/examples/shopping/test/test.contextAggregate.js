@@ -1,7 +1,6 @@
 import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.js";
-import ContextAggregate from "../lib/context-aggregate.js";
-import { Logged } from "../lib/log.js";
-import Outbound from "../lib/outbound.js";
+import ContextAggregate from "../src/entities/context-aggregate.js";
+import Outbound from "../src/entities/outbound.js";
 
 describe("Context Aggregate", () => {
 
@@ -56,8 +55,10 @@ describe("Context Aggregate", () => {
 
             it("Then both the inside entities receive it", () => {
 
-                expect(entity1ReceivedMessages[entity1ReceivedMessages.length - 1]).to.deep.equal(expected);
-                expect(entity2ReceivedMessages[entity2ReceivedMessages.length - 1]).to.deep.equal(expected);
+                const actualEntity1Received = entity1ReceivedMessages.find(([mt]) => mt === allowedInboundMessage);
+                const actualEntity2Received = entity2ReceivedMessages.find(([mt]) => mt === allowedInboundMessage);
+                expect(actualEntity1Received).to.deep.equal(expected);
+                expect(actualEntity2Received).to.deep.equal(expected);
 
             });
 
