@@ -20,8 +20,10 @@ export default function DOMElements(html, {
     children = asArray(children);
     messages = asArray(messages);
     if (!messages.length) {
-        messages = [Logged]
+
+        messages = [Logged];
         blacklist = true;
+
     }
 
     function buildForContainer(container) {
@@ -47,7 +49,6 @@ export default function DOMElements(html, {
         );
 
     }
-
     return container ? buildForContainer(container) : buildForContainer;
 
 }

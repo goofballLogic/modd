@@ -2,7 +2,7 @@ import { expect } from "https://unpkg.com/@esm-bundle/chai@4.3.4-fix.0/esm/chai.
 
 import DOMElements from "../src/entities/dom-elements.js";
 
-describe("DOM Element", () => {
+describe("DOM Elements", () => {
 
     describe("Given a container and some HTML", () => {
 
@@ -114,44 +114,62 @@ describe("DOM Element", () => {
                 {
                     name: "Outer element",
                     children: [
-                        DOMElements(`
-                            <span>Hello 1</span>
-                            <span>Hello 2</span>
-                        `, {
-                            name: "inner group 1"
-                        }),
-                        DOMElements(`
-                            <span>Hello 3</span>
-                            <span>Hello 4</span>
-                        `, {
-                            name: "inner group 2",
-                            render(messageType, messageData, spans) {
-                                if (messageType === someMessage)
-                                    spans[1].innerHTML = `INNER: ${messageData}`;
-                            }
-                        })
+                        InnerGroup1(),
+                        InnerGroup2()
                     ],
                     container
                 }
             );
 
-        })
+            function InnerGroup1() {
 
-        // it("Then the inner elements should have rendered nested inside the outer ones", () => {
+                return DOMElements(
+                    `
+                        <span>Hello 1</span>
+                        <span>Hello 2</span>
+                    `,
+                    {
+                        name: "inner group 1"
+                    }
+                );
 
-        //     const actual = cleanHTML(container.innerHTML);
-        //     const expected = cleanHTML(`
-        //         <div>
-        //             <span>Hello 1</span>
-        //             <span>Hello 2</span>
-        //             <span>Hello 3</span>
-        //             <span>Hello 4</span>
-        //         </div>
-        //         <footer>A footer</footer>
-        //     `);
-        //     expect(actual).to.equal(expected);
+            }
 
-        // });
+            function InnerGroup2() {
+
+                return DOMElements(
+                    `
+                        <span>Hello 3</span>
+                        <span>Hello 4</span>
+                    `,
+                    {
+                        name: "inner group 2",
+                        render(messageType, messageData, spans) {
+                            if (messageType === someMessage)
+                                spans[1].innerHTML = `INNER: ${messageData}`;
+                        }
+                    }
+                );
+
+            }
+
+        });
+
+        it("Then the inner elements should have rendered nested inside the outer ones", () => {
+
+            const actual = cleanHTML(container.innerHTML);
+            const expected = cleanHTML(`
+                <div>
+                    <span>Hello 1</span>
+                    <span>Hello 2</span>
+                    <span>Hello 3</span>
+                    <span>Hello 4</span>
+                </div>
+                <footer>A footer</footer>
+            `);
+            expect(actual).to.equal(expected);
+
+        });
 
         describe("When the top level DOM element receives a message", () => {
 
