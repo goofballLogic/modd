@@ -49,6 +49,7 @@ export default function DOMElements(html, {
         );
 
     }
+
     return container ? buildForContainer(container) : buildForContainer;
 
 }
