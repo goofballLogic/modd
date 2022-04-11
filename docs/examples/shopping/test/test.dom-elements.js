@@ -158,15 +158,17 @@ describe("DOM Elements", () => {
         it("Then the inner elements should have rendered nested inside the outer ones", () => {
 
             const actual = cleanHTML(container.innerHTML);
-            const expected = cleanHTML(`
-                <div>
-                    <span>Hello 1</span>
-                    <span>Hello 2</span>
-                    <span>Hello 3</span>
-                    <span>Hello 4</span>
-                </div>
-                <footer>A footer</footer>
-            `);
+            const expected = cleanHTML(
+                `
+                    <div>
+                        <span>Hello 1</span>
+                        <span>Hello 2</span>
+                        <span>Hello 3</span>
+                        <span>Hello 4</span>
+                    </div>
+                    <footer>A footer</footer>
+                `
+            );
             expect(actual).to.equal(expected);
 
         });
@@ -174,7 +176,9 @@ describe("DOM Elements", () => {
         describe("When the top level DOM element receives a message", () => {
 
             beforeEach(async () => {
+
                 await outerElement(someMessage, "hello ms. inner");
+
             });
 
             it("Then the inner elements should also receive the message", () => {
