@@ -3,18 +3,21 @@ import Aggregate from "./aggregate.js";
 import { asArray } from "../maps/arrays.js";
 import { Logged } from "./log.js";
 
-let count = 1;
+let count = 1000;
 
-export default function DOMElements(html, {
-    name,
-    container,
-    children,
-    messages,
-    blacklist,
-    render
-} = {}) {
+export default function DOMElements(
+    html,
+    {
+        name,
+        container,
+        children,
+        messages,
+        blacklist,
+        mutate
+    } = {}
+) {
 
-    const renderStrategy = render || (() => { });
+    const mutateStrategy = mutate || (() => { });
     name = name || `DOMElements ${count++}`;
 
     children = asArray(children);
@@ -44,7 +47,7 @@ export default function DOMElements(html, {
             },
             Aggregate(`Aggregate for ${name}`, [
                 ...nestedChildren,
-                (mt, md) => renderStrategy(mt, md, myElements),
+                (mt, md) => mutateStrategy(mt, md, myElements),
             ])
         );
 

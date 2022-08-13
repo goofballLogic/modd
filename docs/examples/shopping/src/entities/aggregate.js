@@ -51,7 +51,7 @@ export default function Aggregate(aggregateName, components = []) {
 
             backlog.push([Logged, {
                 source: aggregateName,
-                message: ["Received", logid++, messageType, "stack:", (messageData && messageData[History]) || []],
+                message: ["Received message #", logid++, ". ", messageType, "stack:", (messageData && messageData[History]) || []],
                 level: "trace"
             }]);
 
