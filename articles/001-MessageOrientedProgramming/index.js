@@ -5,24 +5,20 @@ const nameMessage = { type: Name };
 
 function Animal(name) {
 
-    return function receive(message) {
-      return message?.type === Name
+    return message => message?.type === Name
         ? name
         : undefined;
-    }
 
-  }
+}
 
-  function Dog(name) {
+function Dog(name) {
 
     const base = Animal(name);
-    return function receive(message) {
-      return message?.type === Speak
+    return message => message?.type === Speak
         ? "woof"
         : base(message);
-    };
 
-  }
+}
 
-  const spot = Dog("Spot");
-  console.log(spot(nameMessage), "says", spot(speakMessage)); // "Spot says woof"
+const spot = Dog("Spot");
+console.log(spot(nameMessage), "says", spot(speakMessage)); // "Spot says woof"
