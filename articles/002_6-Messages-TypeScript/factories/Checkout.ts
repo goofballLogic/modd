@@ -1,14 +1,16 @@
-import { AtCheckout, CartTotalsUpdated } from "../taxonomy.js";
+import { MessageReceiver } from "../messages";
+import { CartTotalsUpdatedData } from "../schemas";
+import { AtCheckout, CartTotalsUpdated } from "../taxonomy";
 
-export function Checkout() {
+export function Checkout() : MessageReceiver {
 
-    let latestTotals;
+    let latestTotals : CartTotalsUpdatedData;
 
-    return message => {
+    return (message: object) => {
 
         switch (true) {
             case message instanceof CartTotalsUpdated:
-                latestTotals = message;
+                latestTotals = message as CartTotalsUpdatedData;
                 break;
             case message instanceof AtCheckout:
                 logCartTotals(latestTotals);

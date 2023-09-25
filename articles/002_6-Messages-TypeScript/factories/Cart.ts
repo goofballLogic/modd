@@ -1,23 +1,22 @@
-import { AddedToCart, CartTotalsUpdated } from "../taxonomy.js";
+import { MessageReceiver } from "../messages";
+import { AddedToCartData } from "../schemas";
+import { AddedToCart, CartTotalsUpdated } from "../taxonomy";
 
-export function Cart() {
+export function Cart() : MessageReceiver {
 
-    //const added = [];
+    const added: AddedToCartData[] = [];
     let items = 0;
     let total = 0;
 
-    return message => {
+    return (message: object) => {
 
         if(message instanceof AddedToCart) {
 
-            //const { quantity, sku, price } = message;
-            //const [ quantity, price ] = [message["quantity"], message["price"]];
-
-            const { quantity, price } = message;
-            //added.push({ quantity, sku, price });
+            const { quantity, sku, price } = <AddedToCartData>message;
+            added.push({ quantity, sku, price });
             total += (quantity * price);
             items += quantity;
-            return CartTotalsUpdated({ items, total });
+            return [ CartTotalsUpdated({ items, total }) ];
 
         }
 
