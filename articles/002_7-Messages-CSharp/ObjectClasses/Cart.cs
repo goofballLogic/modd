@@ -2,7 +2,7 @@ using Messages;
 using Messages.Catalog;
 using Messages.Taxonomy;
 
-public class Cart : IMessageHandler {
+public class Cart : IObject {
 
     private readonly List<(Product, int)> _added = new();
     private int _itemCount;

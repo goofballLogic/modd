@@ -1,5 +1,5 @@
 namespace Messages {
-    public interface IMessageHandler
+    public interface IObject
     {
         public IEnumerable<Message>? On(Message message);
     }

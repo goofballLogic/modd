@@ -1,12 +1,12 @@
 namespace Messages.ObjectClasses
 {
-    public abstract class Bus : IMessageHandler
+    public abstract class Bus : IObject
     {
         private readonly Queue<Message> _messages = new();
 
-        private readonly IMessageHandler[] _handlers;
+        private readonly IObject[] _handlers;
 
-        protected Bus(IEnumerable<IMessageHandler> messageHandlers)
+        protected Bus(IEnumerable<IObject> messageHandlers)
         {
             _handlers = messageHandlers.ToArray();
         }

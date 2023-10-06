@@ -4,7 +4,7 @@ using Messages.Taxonomy;
 namespace Messages.ObjectClasses
 {
 
-    public class Checkout : IMessageHandler
+    public class Checkout : IObject
     {
 
         private CartTotalsUpdated _latestTotals = new(0, 0);
